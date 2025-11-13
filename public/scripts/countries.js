@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function getAllCountries() {
   const resultDiv = document.getElementById('countriesResult')
-
   try {
     // Show loading state
     resultDiv.innerHTML = '<p class="text-slate-500">Loading...</p>'
@@ -41,7 +40,7 @@ async function getAllCountries() {
     } else {
       // resultDiv.innerHTML = JSON.stringify(countries)
       resultDiv.innerHTML = `
-        
+
           <table class="min-w-full divide-y divide-slate-200 mt-4 text-xs">
             <thead class="bg-slate-50">
               <tr>
