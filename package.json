@@ -5,7 +5,7 @@
   "scripts": {
     "tailwind:watch": "bun x @tailwindcss/cli -i ./public/styles/input.css -o ./public/styles/output.css --watch",
     "server:js": "bun run ./src/server.js",
-    "dev": "concurrently --kill-others-on-fail \"bun run tailwind:watch\" \"bun --hot run server:js\"",
+    "dev": "concurrently --kill-others-on-fail 'bun run tailwind:watch' 'bun --hot run server:js'",
     "debug": "bun --inspect run ./src/server.js",
     "build": "bun build ./src/server.js --outdir ./dist --target bun "
   },
