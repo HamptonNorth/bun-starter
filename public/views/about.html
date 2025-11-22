@@ -1,25 +1,23 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Bun starter template" />
-    <meta name="author" content="RNC" />
-    <meta name="keywords" content="Bun 1.3 bun-serve tailwind tailwindcss Lit SQLite" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- 1. Static CSS (CRITICAL for preventing Layout Shift) -->
     <link rel="stylesheet" href="/styles/output.css" />
+    <link rel="stylesheet" href="/styles/rm.css" />
+    <!-- 1. Load Components -->
+    <!-- We use module type because they use ES6 imports internally -->
+    <script type="module" src="/components/rm-head.js"></script>
+    <script type="module" src="/components/rm-navheader.js"></script>
+    <script type="module" src="/components/rm-footer.js"></script>
 
-    <title>About v2</title>
+    <!-- 2. Configure Page Head -->
+    <!-- Replaces the bulk of the old head section -->
+    <rm-head page-title="About v2"></rm-head>
   </head>
+
   <body>
-    <header class="bg-slate-100 py-2">
-      <nav class="flex gap-8 pt-2 pb-2 pl-12 text-blue-700">
-        <a href="/" class="hover:underline">Home page</a>
-        <a href="/countries.html" class="hover:underline">Countries</a>
-        <a href="/users.html" class="hover:underline">Users</a>
-        <a href="/about.html" class="hover:underline">About page</a>
-      </nav>
-    </header>
+    <!-- 3. Common Header -->
+    <rm-navheader class="block min-h-14 bg-slate-100 py-2"></rm-navheader>
 
     <main class="mt-4 w-3xl">
       <article>
@@ -32,10 +30,7 @@
       </article>
     </main>
 
-    <footer>
-      <div class="mt-24 ml-8 text-xs text-slate-400">
-        &copy; 2025 Redmug Software.. All rights reserved.
-      </div>
-    </footer>
+    <!-- 4. Common Footer -->
+    <rm-footer></rm-footer>
   </body>
 </html>

@@ -1,24 +1,23 @@
-// version 1.7 Gemini Pro
+// version 2.0 Gemini 2.5 Pro
 // server.js
 
-//  Connect to database
 import { Database } from "bun:sqlite";
 import { join } from "path";
-import { initialiseTestCountries } from "./db-setup.js";
-import { initialiseTestUsers } from "./db-setup.js";
-
+import { initialiseTestCountries, initialiseTestUsers } from "./db-setup.js";
 import { handleApiRoutes } from "./routes/api.js";
 
-// create and export database instance
+// 1. Database Setup
+// ---------------------------------------------------------
+// Create and export database instance
 export const db = new Database(join(import.meta.dir, "../data", "app.db"));
 console.log("SQLite database initialised - path: ./data/app.db");
 
-// set up example/test table
+// Initialize test tables
 initialiseTestCountries(db, "test_countries");
-
-// set up example/test table
 initialiseTestUsers(db, "test_users");
 
+// 2. Server Configuration
+// ---------------------------------------------------------
 const server = Bun.serve({
   port: 3000,
 
@@ -26,54 +25,75 @@ const server = Bun.serve({
     const url = new URL(req.url);
     const path = url.pathname;
 
-    // API routes
+    console.log(`Request: ${req.method} ${path}`);
+
+    // A. API Routes
+    // -----------------------------------------------------
     if (path.startsWith("/api/")) {
       return handleApiRoutes(req, path);
     }
 
-    // Static assets (CSS, JS, images, docs, etc.)
+    // B. Static Assets (CSS, JS, Images, Components)
+    // -----------------------------------------------------
+    // We explicitly check for folders we want to serve publicly
     if (
       path.startsWith("/styles/") ||
       path.startsWith("/scripts/") ||
       path.startsWith("/assets/") ||
+      path.startsWith("/components/") || // Added components folder
       path.startsWith("/docs/")
     ) {
       return serveStatic(path);
     }
 
-    // Favicon
+    // Special case for favicon
     if (path === "/favicon.ico") {
       return new Response(Bun.file("./favicon.ico"));
     }
 
+    // C. HTML Pages (Routing)
+    // -----------------------------------------------------
     if (path === "/") {
       return serveHtmlPage("./public/index.html");
     }
 
-    // HTML pages - serve from public directory
+    // Default: Try to find a matching HTML file in /public/views
+    // This handles /countries.html, /about.html, etc.
     return serveHtmlPage("./public/views" + path);
   },
 });
 
-// Serve static files
+// 3. Helper Functions
+// ---------------------------------------------------------
+
+/**
+ * Serves a static file from the public directory.
+ * @param {string} path - The URL path requested
+ */
 function serveStatic(path) {
   const file = Bun.file(`./public${path}`);
-  return new Response(file);
+  return new Response(file, {
+    headers: {
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
 }
 
-// Serve HTML pages
-async function serveHtmlPage(path) {
-  const pageFile = Bun.file(path);
+/**
+ * Serves an HTML file, returning 404 if missing.
+ * @param {string} filepath - The local file system path
+ */
+async function serveHtmlPage(filepath) {
+  const pageFile = Bun.file(filepath);
+
   if (!(await pageFile.exists())) {
     return serve404();
-
-    // Handle the missing file logic here
-  } else {
-    return new Response(pageFile, {
-      status: 200,
-      headers: { "Content-Type": "text/html; charset=utf-8" },
-    });
   }
+
+  return new Response(pageFile, {
+    status: 200,
+    headers: { "Content-Type": "text/html; charset=utf-8" },
+  });
 }
 
 /**
@@ -86,9 +106,8 @@ async function serve404() {
       status: 404,
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
-  } else {
-    // Fallback
-    return new Response("Not Found", { status: 404 });
   }
+  return new Response("Not Found", { status: 404 });
 }
+
 console.log(`Server running at http://localhost:${server.port}`);

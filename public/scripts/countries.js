@@ -110,7 +110,7 @@ async function searchCountries() {
     } else {
       // resultDiv.innerHTML = JSON.stringify(countries)
       resultDiv.innerHTML = `
-        <div class=""> Countries containg ${term}        Fdel
+        <div class=""> Countries containing:  <span class="pl-2 font-semibold text-sm">${term}</span>
           <table class="min-w-full divide-y divide-slate-200 mt-4 text-xs">
             <thead class="bg-slate-50">
               <tr>
