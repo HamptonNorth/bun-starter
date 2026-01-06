@@ -5,8 +5,6 @@ created: 2026-01-05
 published: y
 file-type: markdown
 style: github
-private: rcollins@redmug.co.uk
-sticky: true
 ---
 # Clone the repro
 Change directory to your `~/code` directory.
@@ -84,14 +82,14 @@ By cloning an existing repository, your local development folder is currently "l
 
 Here is the workflow to get this done within Zed and your terminal.
 
-##### Create a New Repository on GitHub
+#### Create a New Repository on GitHub
 Before running commands, go to GitHub and create a new repository.
 
 Do not initialize it with a README, license, or .gitignore, as your local project already has these files.
 
 Copy the HTTPS or SSH URL (e.g., https://github.com/HamptonNorth/pages.git).
 
-##### Update Remotes using Zed terminal
+#### Update Remotes using terminal
 
 
 **Step A:** Check existing remotes
@@ -121,7 +119,7 @@ git remote add origin https://github.com/your-username/new-project.git
 
 ```
 
-##### Commit and Push
+#### Commit and Push
 Now that the "plumbing" is redirected, you can send your code to GitHub.
 
 Stage and Commit: If you haven't committed your "numerous changes" yet, you can use the Source Control panel in Zed (the icon that looks like a branch) or use the terminal:
