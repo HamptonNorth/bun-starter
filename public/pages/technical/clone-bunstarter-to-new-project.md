@@ -77,4 +77,67 @@ PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"mcss-georgi
 ```
 
 
-Then run `bun run dev' - this will thro the error and prompt you to run the set up script.
+Then run `bun run dev' - this will throw the error and prompt you to run the set up script. Run that and you should be good to go.
+
+## Resetting local Git to GitHub links
+By cloning an existing repository, your local development folder is currently "linked" to the original source (the origin remote). To push this as a completely new project, you need to redirect those links to a new GitHub repository.
+
+Here is the workflow to get this done within Zed and your terminal.
+
+##### Create a New Repository on GitHub
+Before running commands, go to GitHub and create a new repository.
+
+Do not initialize it with a README, license, or .gitignore, as your local project already has these files.
+
+Copy the HTTPS or SSH URL (e.g., https://github.com/HamptonNorth/pages.git).
+
+##### Update Remotes using Zed terminal
+
+
+**Step A:** Check existing remotes
+Run this to see the current link to the old project:
+
+```Bash
+
+git remote -v
+
+```
+
+**Step B:** Remove the old link
+You want to sever the connection to the original repository so you don't accidentally push changes there.
+
+```Bash
+
+git remote remove origin
+
+```
+
+**Step C:** Add your new repository
+Now, link your local folder to the new GitHub URL you copied earlier:
+
+```Bash
+
+git remote add origin https://github.com/your-username/new-project.git
+
+```
+
+##### Commit and Push
+Now that the "plumbing" is redirected, you can send your code to GitHub.
+
+Stage and Commit: If you haven't committed your "numerous changes" yet, you can use the Source Control panel in Zed (the icon that looks like a branch) or use the terminal:
+
+```Bash
+
+git add .
+git commit -m "Initial commit for new project"
+
+```
+
+**Push to GitHub:** Since this is the first push to a new remote, you need to set the "upstream" branch:
+
+```Bash
+
+git push -u origin main
+#(Note: If your default branch is named master instead of main, use git push -u origin master.)
+
+```
