@@ -7,7 +7,7 @@ file-type: markdown
 style: github
 sticky: false
 ---
-# Recommended GitHub Flavoured Markdown (GFM) Editors
+# Recommended Markdown Editors
 
 This list focuses on editors that are **free or low-cost**, **cross-platform**, and designed for **general users** rather than developers.
 

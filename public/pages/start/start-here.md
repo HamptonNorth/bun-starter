@@ -6,18 +6,23 @@ published: y
 file-type: markdown
 sticky: true
 style: github
+read-mode=false
 ---
 
 # Pages
 
-The `bunstarter` template application includes a simple blog system. Markdown pages , in the right directories are automatically included in an index page with all navigation links.
+The `bunstarter` template application includes a simple blog system. Markdown pages, in the right directories are automatically included in an index page with navigation links.
 
-In this sample set up there are three categories or types of of pages. These are **start**, **rants** and **technical**. These are the categories used in the drop down navigation bar menu.
+In this sample set up there are four categories or types of of pages. These are **start**, **rants**, **technical** and **test-styles**. These are the categories used in the drop down navigation bar menu.
 
 The categories are controlled by the `.env` file in the root directory. 
 
 ```bash
-PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"mcss-georgia","docs":"mcss-verdana"}'
+AVAILABLE_STYLES="tailwind","github","mcss-georgia","mcss-verdana","mcss-georgia-tight",
+"pico","water","water-dark","sakura","new-css","tufte","splendor","modest","retro","air"
+
+# Multiple categories with different styles
+PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"modest","test-styles":"github"}'
 ```
 The `:sidebar` controls an optional permanent left drawer menu which will be useful for documentation style sites. The `:"github"`, `:"mcss-georgia"` are the style setting for the resulting HTML.
 

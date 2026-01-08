@@ -86,4 +86,4 @@ To show a **code block**, use three backticks above and below:
 
 There are several examples of horizontal rules used to divide the page up. These are 3 dashes using  `---` on their own line.
 
-To see this markdown sample rendered follow the link for `Using markdown (example code rendered)`
+To see this markdown sample rendered follow the link for [example using-markdown rendered](using-markdown-rendered)

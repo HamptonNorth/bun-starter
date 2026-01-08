@@ -1,6 +1,6 @@
-// version 3.12 Claude Opus 4.5
+// version 3.13 Claude Opus 4.5
 // Complete Markdown Editor: Debounced Spellcheck, Multi-node Highlights, and Dynamic Pluralized Footer
-// Fixed: API response field name (raw instead of content)
+// Fixed: API response field names (issues instead of errors, text instead of word)
 import { LitElement, html, css, nothing } from 'lit'
 
 export class RmMarkdownEditor extends LitElement {
@@ -181,7 +181,7 @@ export class RmMarkdownEditor extends LitElement {
         body: JSON.stringify({ text: this._currentContent }),
       })
       const data = await response.json()
-      this._spellErrors = data.errors || []
+      this._spellErrors = data.issues || []
     } catch (err) {
       console.error('Spellcheck failed:', err)
     } finally {
@@ -220,9 +220,9 @@ export class RmMarkdownEditor extends LitElement {
           startNode = n
           startOffset = error.offset - charCount
         }
-        if (charCount + nodeLength >= error.offset + error.length) {
+        if (charCount + nodeLength >= error.offset + error.text.length) {
           endNode = n
-          endOffset = error.offset + error.length - charCount
+          endOffset = error.offset + error.text.length - charCount
           break
         }
         charCount += nodeLength
@@ -235,7 +235,7 @@ export class RmMarkdownEditor extends LitElement {
           range.setEnd(endNode, endOffset)
           ranges.push(range)
         } catch (err) {
-          console.warn('Range error:', error.word)
+          console.warn('Range error:', error.text)
         }
       }
     }
@@ -259,11 +259,11 @@ export class RmMarkdownEditor extends LitElement {
     const start = preCaretRange.toString().length
 
     const error = this._spellErrors.find(
-      (err) => start >= err.offset && start <= err.offset + err.length,
+      (err) => start >= err.offset && start <= err.offset + err.text.length,
     )
     if (error) {
       e.preventDefault()
-      this._contextWord = error.word
+      this._contextWord = error.text
       this._contextPos = { x: e.clientX, y: e.clientY }
       this._showContext = true
     }

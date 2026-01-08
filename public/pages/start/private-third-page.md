@@ -6,6 +6,7 @@ published: y
 file-type: markdown
 style: github
 private: rcollins@redmug.co.uk
+read-mode: true
 ---
 
 # Was bunstarter successful?
