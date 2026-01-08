@@ -25,7 +25,7 @@ import { join } from 'node:path'
 // =============================================================================
 
 // Maximum results returned from search
-export const SEARCH_MAX_RESULTS = 20
+export const SEARCH_MAX_RESULTS = 25
 
 // Minimum query length required
 export const SEARCH_MIN_QUERY_LENGTH = 3
