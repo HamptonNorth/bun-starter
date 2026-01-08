@@ -4,8 +4,8 @@ summary: A quick explanation of pages
 created: 2099-12-30
 published: y
 file-type: markdown
-style: github
 sticky: true
+style: github
 ---
 
 # Pages
