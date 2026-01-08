@@ -1,5 +1,10 @@
-// version 18.0 Claude Opus 4.5
+// version 18.1 Claude Opus 4.5
 // =============================================================================
+// CHANGES from v18.1:
+// - FIX: Spellcheck now filters out issues in code blocks, inline code,
+//        URLs, email addresses, markdown links/images, and HTML tags
+//        (frontmatter IS spellchecked - add recurring terms to dictionary)
+//
 // CHANGES from v18.0:
 // - REFACTOR: Style system moved to style-registry.js module
 // - NEW: Support for many new markdown styles (Pico, Water, Tufte, etc.)
@@ -421,6 +426,72 @@ function parseFrontMatter(text) {
 }
 
 /**
+ * Build an array of character ranges to skip for spellchecking
+ * (code blocks, inline code, URLs, etc. - NOT frontmatter)
+ * @param {string} text - The full text content
+ * @returns {Array<{start: number, end: number}>} - Merged skip ranges
+ */
+function buildSkipRanges(text) {
+  const skipPatterns = [
+    // Fenced code blocks
+    { regex: /```[\s\S]*?```/g, flags: 'g' },
+    // Inline code
+    { regex: /`[^`]+`/g, flags: 'g' },
+    // URLs
+    { regex: /https?:\/\/[^\s\])<>]+/gi, flags: 'gi' },
+    // Email addresses
+    { regex: /[\w.-]+@[\w.-]+\.\w+/gi, flags: 'gi' },
+    // Markdown images
+    { regex: /!\[[^\]]*\]\([^)]+\)/g, flags: 'g' },
+    // Markdown links
+    { regex: /\[[^\]]*\]\([^)]+\)/g, flags: 'g' },
+    // HTML tags
+    { regex: /<[^>]+>/g, flags: 'g' },
+  ]
+
+  const skipRanges = []
+
+  for (const pattern of skipPatterns) {
+    const regex = new RegExp(pattern.regex.source, pattern.flags || pattern.regex.flags)
+    let match
+    while ((match = regex.exec(text)) !== null) {
+      skipRanges.push({ start: match.index, end: match.index + match[0].length })
+      // For non-global regex, break after first match
+      if (!regex.global) break
+    }
+  }
+
+  // Sort by start position
+  skipRanges.sort((a, b) => a.start - b.start)
+
+  // Merge overlapping ranges
+  const merged = []
+  for (const range of skipRanges) {
+    if (merged.length === 0 || merged[merged.length - 1].end < range.start) {
+      merged.push({ ...range })
+    } else {
+      merged[merged.length - 1].end = Math.max(merged[merged.length - 1].end, range.end)
+    }
+  }
+
+  return merged
+}
+
+/**
+ * Check if a position falls within any skip range
+ * @param {number} offset - Character offset to check
+ * @param {Array<{start: number, end: number}>} skipRanges - Ranges to skip
+ * @returns {boolean}
+ */
+function isInSkipRange(offset, skipRanges) {
+  for (const range of skipRanges) {
+    if (offset >= range.start && offset < range.end) return true
+    if (range.start > offset) break // Ranges are sorted, no need to check further
+  }
+  return false
+}
+
+/**
  * POST /api/spellcheck
  * Runs CSpell against provided text using .cspell.json + SQLite words
  */
@@ -462,13 +533,18 @@ async function handleSpellCheck(req) {
     // Perform spellcheck
     const result = await spellCheckDocument(doc, { generateSuggestions: true }, finalSettings)
 
-    // Transform issues for the client
-    const issues = result.issues.map((issue) => ({
-      text: issue.text,
-      offset: issue.offset,
-      line: issue.line?.offset || 0,
-      suggestions: issue.suggestions?.slice(0, 5) || [],
-    }))
+    // Build skip ranges for markdown elements we don't want to spellcheck
+    const skipRanges = buildSkipRanges(text)
+
+    // Transform and filter issues - exclude those in skip ranges
+    const issues = result.issues
+      .filter((issue) => !isInSkipRange(issue.offset, skipRanges))
+      .map((issue) => ({
+        text: issue.text,
+        offset: issue.offset,
+        line: issue.line?.offset || 0,
+        suggestions: issue.suggestions?.slice(0, 5) || [],
+      }))
 
     return Response.json({ issues })
   } catch (err) {
