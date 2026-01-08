@@ -1,0 +1,380 @@
+/* version 1.0 Claude Opus 4.5 */
+/* =============================================================================
+ * md-new-css.css - new.css Modern Classless Markdown Styling
+ * =============================================================================
+ * A modern classless CSS framework using system fonts.
+ * No external font loading required.
+ *
+ * Based on: https://newcss.net/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * CSS CUSTOM PROPERTIES
+ * ============================================================================= */
+
+:root {
+  --nc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --nc-font-mono: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  --nc-tx-1: #1a1a2e;
+  --nc-tx-2: #4a4a68;
+  --nc-bg-1: #ffffff;
+  --nc-bg-2: #f6f8fa;
+  --nc-bg-3: #e1e4e8;
+  --nc-lk-1: #0366d6;
+  --nc-lk-2: #0257b8;
+  --nc-lk-tx: #ffffff;
+  --nc-ac-1: #6366f1;
+  --nc-ac-tx: #ffffff;
+}
+
+/* =============================================================================
+ * CONTAINER
+ * ============================================================================= */
+
+.md-new-css {
+  font-family: var(--nc-font-sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--nc-tx-1);
+  max-width: 750px;
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-new-css h1,
+.md-new-css h2,
+.md-new-css h3,
+.md-new-css h4,
+.md-new-css h5,
+.md-new-css h6 {
+  margin: 3rem 0 1.38rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--nc-tx-1);
+}
+
+.md-new-css h1 {
+  font-size: 2.488rem;
+  margin-top: 0;
+}
+
+.md-new-css h2 {
+  font-size: 2.074rem;
+}
+
+.md-new-css h3 {
+  font-size: 1.728rem;
+}
+
+.md-new-css h4 {
+  font-size: 1.44rem;
+}
+
+.md-new-css h5 {
+  font-size: 1.2rem;
+}
+
+.md-new-css h6 {
+  font-size: 1rem;
+}
+
+.md-new-css p {
+  margin-bottom: 1rem;
+}
+
+.md-new-css small {
+  font-size: 0.833rem;
+}
+
+.md-new-css strong {
+  font-weight: 700;
+}
+
+.md-new-css em {
+  font-style: italic;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-new-css a {
+  color: var(--nc-lk-1);
+  text-decoration: none;
+}
+
+.md-new-css a:hover {
+  color: var(--nc-lk-2);
+  text-decoration: underline;
+}
+
+.md-new-css a:visited {
+  color: #6d4aff;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-new-css ul,
+.md-new-css ol {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.md-new-css ul {
+  list-style-type: disc;
+}
+
+.md-new-css ol {
+  list-style-type: decimal;
+}
+
+.md-new-css ul ul,
+.md-new-css ul ol,
+.md-new-css ol ul,
+.md-new-css ol ol {
+  margin-bottom: 0;
+}
+
+.md-new-css li {
+  margin-bottom: 0.5rem;
+}
+
+.md-new-css li:last-child {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-new-css code {
+  padding: 0.2rem 0.4rem;
+  font-family: var(--nc-font-mono);
+  font-size: 0.9em;
+  background: var(--nc-bg-2);
+  border-radius: 4px;
+  color: var(--nc-tx-1);
+}
+
+.md-new-css pre {
+  background: var(--nc-bg-2);
+  border: 1px solid var(--nc-bg-3);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.md-new-css pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-new-css blockquote {
+  margin: 0 0 1rem;
+  padding: 1rem 1rem 1rem 1.5rem;
+  background: var(--nc-bg-2);
+  border-left: 4px solid var(--nc-ac-1);
+  border-radius: 0 6px 6px 0;
+  color: var(--nc-tx-2);
+}
+
+.md-new-css blockquote p {
+  margin-bottom: 0;
+}
+
+.md-new-css blockquote p + p {
+  margin-top: 1rem;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-new-css table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.md-new-css th,
+.md-new-css td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--nc-bg-3);
+}
+
+.md-new-css th {
+  font-weight: 700;
+  background: var(--nc-bg-2);
+  border-bottom: 2px solid var(--nc-bg-3);
+}
+
+.md-new-css tbody tr:hover {
+  background: var(--nc-bg-2);
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-new-css hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid var(--nc-bg-3);
+}
+
+/* =============================================================================
+ * IMAGES & FIGURES
+ * ============================================================================= */
+
+.md-new-css img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.md-new-css figure {
+  margin: 0 0 1rem;
+}
+
+.md-new-css figure img {
+  margin-bottom: 0.5rem;
+}
+
+.md-new-css figcaption {
+  font-size: 0.875rem;
+  color: var(--nc-tx-2);
+  text-align: center;
+}
+
+/* =============================================================================
+ * DEFINITION LISTS
+ * ============================================================================= */
+
+.md-new-css dl {
+  margin-bottom: 1rem;
+}
+
+.md-new-css dt {
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+.md-new-css dd {
+  margin-left: 2rem;
+}
+
+/* =============================================================================
+ * KEYBOARD & MARK
+ * ============================================================================= */
+
+.md-new-css kbd {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-family: var(--nc-font-mono);
+  font-size: 0.875em;
+  line-height: 1;
+  color: var(--nc-tx-1);
+  background: var(--nc-bg-2);
+  border: 1px solid var(--nc-bg-3);
+  border-radius: 4px;
+  box-shadow: 0 2px 0 var(--nc-bg-3);
+}
+
+.md-new-css mark {
+  padding: 0.1rem 0.3rem;
+  background: #fff3cd;
+  border-radius: 2px;
+}
+
+/* =============================================================================
+ * DETAILS/SUMMARY
+ * ============================================================================= */
+
+.md-new-css details {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--nc-bg-2);
+  border-radius: 6px;
+}
+
+.md-new-css summary {
+  cursor: pointer;
+  font-weight: 700;
+  outline: none;
+}
+
+.md-new-css summary:hover {
+  color: var(--nc-lk-1);
+}
+
+.md-new-css details[open] summary {
+  margin-bottom: 1rem;
+}
+
+/* =============================================================================
+ * ABBREVIATIONS
+ * ============================================================================= */
+
+.md-new-css abbr {
+  cursor: help;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--nc-tx-2);
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-new-css {
+    font-size: 11pt;
+    max-width: none;
+    color: black;
+  }
+
+  .md-new-css h1,
+  .md-new-css h2,
+  .md-new-css h3 {
+    page-break-after: avoid;
+  }
+
+  .md-new-css a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .md-new-css a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.75em;
+    color: #666;
+  }
+
+  .md-new-css pre,
+  .md-new-css blockquote,
+  .md-new-css img,
+  .md-new-css table {
+    page-break-inside: avoid;
+  }
+
+  .md-new-css code,
+  .md-new-css pre,
+  .md-new-css blockquote {
+    background: #f5f5f5;
+    border-color: #ccc;
+  }
+}

@@ -1,0 +1,348 @@
+/* version 1.1 Claude Opus 4.5 */
+/* Added margin for container breathing room */
+/* =============================================================================
+ * md-water-dark.css - Water CSS Dark Theme Markdown Styling
+ * =============================================================================
+ * A simple, classless CSS framework adaptation with a dark color scheme.
+ * Uses system fonts, no external font loading required.
+ *
+ * Based on: https://watercss.kognise.dev/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * CSS CUSTOM PROPERTIES - Dark Theme Colors
+ * ============================================================================= */
+
+:root {
+  --water-dark-bg: #1e1e2e;
+  --water-dark-bg-secondary: #2a2a3c;
+  --water-dark-text: #cdd6f4;
+  --water-dark-text-muted: #a6adc8;
+  --water-dark-text-bright: #f5f5f5;
+  --water-dark-link: #89b4fa;
+  --water-dark-link-hover: #b4befe;
+  --water-dark-border: #45475a;
+  --water-dark-code-bg: #313244;
+  --water-dark-blockquote-border: #7f849c;
+  --water-dark-font:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --water-dark-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* =============================================================================
+ * CONTAINER
+ * ============================================================================= */
+
+.md-water-dark {
+  font-family: var(--water-dark-font);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--water-dark-text);
+  background-color: var(--water-dark-bg);
+  max-width: 800px;
+  padding: 1rem 2rem;
+  margin: 8px;
+  border-radius: 8px;
+}
+
+/* Reduce margin on mobile */
+@media (max-width: 768px) {
+  .md-water-dark {
+    margin: 4px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-water-dark h1,
+.md-water-dark h2,
+.md-water-dark h3,
+.md-water-dark h4,
+.md-water-dark h5,
+.md-water-dark h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--water-dark-text-bright);
+}
+
+.md-water-dark h1 {
+  font-size: 2.25rem;
+  margin-top: 0;
+  border-bottom: 1px solid var(--water-dark-border);
+  padding-bottom: 0.5rem;
+}
+
+.md-water-dark h2 {
+  font-size: 1.75rem;
+  border-bottom: 1px solid var(--water-dark-border);
+  padding-bottom: 0.3rem;
+}
+
+.md-water-dark h3 {
+  font-size: 1.4rem;
+}
+
+.md-water-dark h4 {
+  font-size: 1.15rem;
+}
+
+.md-water-dark h5 {
+  font-size: 1rem;
+}
+
+.md-water-dark h6 {
+  font-size: 0.9rem;
+  color: var(--water-dark-text-muted);
+}
+
+.md-water-dark p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.md-water-dark strong {
+  color: var(--water-dark-text-bright);
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-water-dark a {
+  color: var(--water-dark-link);
+  text-decoration: none;
+}
+
+.md-water-dark a:hover {
+  color: var(--water-dark-link-hover);
+  text-decoration: underline;
+}
+
+.md-water-dark a:visited {
+  color: #cba6f7;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-water-dark ul,
+.md-water-dark ol {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-left: 2em;
+}
+
+.md-water-dark ul ul,
+.md-water-dark ul ol,
+.md-water-dark ol ul,
+.md-water-dark ol ol {
+  margin-bottom: 0;
+}
+
+.md-water-dark li {
+  margin-bottom: 0.25em;
+}
+
+.md-water-dark li + li {
+  margin-top: 0.25em;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-water-dark code {
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  font-family: var(--water-dark-mono);
+  background-color: var(--water-dark-code-bg);
+  border-radius: 4px;
+  color: #f38ba8;
+}
+
+.md-water-dark pre {
+  padding: 1em;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--water-dark-code-bg);
+  border-radius: 6px;
+  border: 1px solid var(--water-dark-border);
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.md-water-dark pre code {
+  padding: 0;
+  background-color: transparent;
+  font-size: 100%;
+  color: var(--water-dark-text);
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-water-dark blockquote {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  color: var(--water-dark-text-muted);
+  background-color: var(--water-dark-bg-secondary);
+  border-left: 4px solid var(--water-dark-blockquote-border);
+  border-radius: 0 4px 4px 0;
+}
+
+.md-water-dark blockquote > :first-child {
+  margin-top: 0;
+}
+
+.md-water-dark blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-water-dark table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.md-water-dark th,
+.md-water-dark td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--water-dark-border);
+  text-align: left;
+}
+
+.md-water-dark th {
+  font-weight: 600;
+  background-color: var(--water-dark-bg-secondary);
+  color: var(--water-dark-text-bright);
+}
+
+.md-water-dark tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.md-water-dark tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-water-dark hr {
+  height: 1px;
+  padding: 0;
+  margin: 2rem 0;
+  background-color: var(--water-dark-border);
+  border: 0;
+}
+
+/* =============================================================================
+ * IMAGES
+ * ============================================================================= */
+
+.md-water-dark img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--water-dark-border);
+}
+
+/* =============================================================================
+ * DEFINITION LISTS
+ * ============================================================================= */
+
+.md-water-dark dl {
+  margin-bottom: 1rem;
+}
+
+.md-water-dark dt {
+  font-weight: 600;
+  color: var(--water-dark-text-bright);
+  margin-top: 1rem;
+}
+
+.md-water-dark dd {
+  margin-left: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================================================
+ * KEYBOARD/MARK ELEMENTS
+ * ============================================================================= */
+
+.md-water-dark kbd {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  font-size: 85%;
+  font-family: var(--water-dark-mono);
+  line-height: 1;
+  color: var(--water-dark-text-bright);
+  vertical-align: middle;
+  background-color: var(--water-dark-bg-secondary);
+  border: 1px solid var(--water-dark-border);
+  border-radius: 4px;
+  box-shadow: inset 0 -1px 0 var(--water-dark-border);
+}
+
+.md-water-dark mark {
+  padding: 0.1em 0.3em;
+  background-color: rgba(249, 226, 175, 0.3);
+  color: #f9e2af;
+  border-radius: 2px;
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-water-dark {
+    background-color: white;
+    color: black;
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+
+  .md-water-dark h1,
+  .md-water-dark h2,
+  .md-water-dark h3,
+  .md-water-dark h4,
+  .md-water-dark h5,
+  .md-water-dark h6 {
+    color: black;
+    page-break-after: avoid;
+  }
+
+  .md-water-dark a {
+    color: #0000ee;
+    text-decoration: underline;
+  }
+
+  .md-water-dark pre,
+  .md-water-dark blockquote {
+    page-break-inside: avoid;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+  }
+
+  .md-water-dark code {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+}

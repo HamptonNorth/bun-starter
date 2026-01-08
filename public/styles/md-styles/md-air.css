@@ -1,0 +1,300 @@
+/* version 1.0 Claude Opus 4.5 */
+/* =============================================================================
+ * md-air.css - Air Markdown Styling
+ * =============================================================================
+ * A light and airy style with generous whitespace.
+ * Requires Open Sans from Google Fonts (loaded by server).
+ *
+ * Based on: https://markdowncss.github.io/air/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * BASE STYLES
+ * ============================================================================= */
+
+.md-air {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.9;
+  color: #444;
+  max-width: 45em;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-air h1,
+.md-air h2,
+.md-air h3,
+.md-air h4,
+.md-air h5,
+.md-air h6 {
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  color: #222;
+  letter-spacing: -0.01em;
+}
+
+.md-air h1 {
+  font-size: 2.5em;
+  font-weight: 300;
+  margin-top: 0;
+  margin-bottom: 1em;
+  letter-spacing: -0.02em;
+  color: #111;
+}
+
+.md-air h2 {
+  font-size: 1.75em;
+  font-weight: 400;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid #eee;
+}
+
+.md-air h3 {
+  font-size: 1.375em;
+  font-weight: 600;
+}
+
+.md-air h4 {
+  font-size: 1.125em;
+}
+
+.md-air h5 {
+  font-size: 1em;
+}
+
+.md-air h6 {
+  font-size: 0.875em;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.md-air p {
+  margin-top: 0;
+  margin-bottom: 1.75em;
+}
+
+.md-air strong {
+  font-weight: 600;
+}
+
+.md-air em {
+  font-style: italic;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-air a {
+  color: #0077cc;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 119, 204, 0.3);
+  transition: all 0.15s ease;
+}
+
+.md-air a:hover {
+  color: #005fa3;
+  border-bottom-color: #005fa3;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-air ul,
+.md-air ol {
+  margin-top: 0;
+  margin-bottom: 1.75em;
+  padding-left: 1.5em;
+}
+
+.md-air ul {
+  list-style-type: circle;
+}
+
+.md-air ol {
+  list-style-type: decimal;
+}
+
+.md-air ul ul,
+.md-air ul ol,
+.md-air ol ul,
+.md-air ol ol {
+  margin-bottom: 0;
+}
+
+.md-air li {
+  margin-bottom: 0.5em;
+}
+
+.md-air li p {
+  margin-bottom: 0.5em;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-air code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  background-color: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 3px;
+}
+
+.md-air pre {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.875em;
+  line-height: 1.6;
+  padding: 1.25em;
+  overflow-x: auto;
+  background-color: #f8f8f8;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  margin: 1.75em 0;
+}
+
+.md-air pre code {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 100%;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-air blockquote {
+  margin: 1.75em 0;
+  padding: 0.75em 1.5em;
+  color: #666;
+  border-left: 3px solid #ddd;
+  font-style: italic;
+  font-weight: 300;
+}
+
+.md-air blockquote > :first-child {
+  margin-top: 0;
+}
+
+.md-air blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.md-air blockquote cite {
+  display: block;
+  margin-top: 0.75em;
+  font-size: 0.875em;
+  color: #888;
+  font-style: normal;
+}
+
+.md-air blockquote cite::before {
+  content: '— ';
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-air table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75em 0;
+  font-size: 0.9em;
+}
+
+.md-air th,
+.md-air td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.md-air th {
+  font-weight: 600;
+  color: #222;
+  border-bottom: 2px solid #ddd;
+}
+
+.md-air tr:hover {
+  background-color: #fafafa;
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-air hr {
+  margin: 3em 0;
+  border: none;
+  height: 1px;
+  background-color: #eee;
+}
+
+/* =============================================================================
+ * IMAGES & FIGURES
+ * ============================================================================= */
+
+.md-air img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.md-air figure {
+  margin: 2em 0;
+}
+
+.md-air figcaption {
+  font-size: 0.875em;
+  color: #888;
+  text-align: center;
+  margin-top: 0.75em;
+  font-style: italic;
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-air {
+    font-size: 11pt;
+    max-width: 100%;
+    padding: 0;
+    font-weight: 400;
+  }
+
+  .md-air a {
+    color: inherit;
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  .md-air h1,
+  .md-air h2,
+  .md-air h3 {
+    page-break-after: avoid;
+  }
+
+  .md-air pre,
+  .md-air blockquote,
+  .md-air figure {
+    page-break-inside: avoid;
+  }
+}

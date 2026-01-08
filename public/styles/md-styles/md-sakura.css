@@ -1,0 +1,372 @@
+/* version 1.0 Claude Opus 4.5 */
+/* =============================================================================
+ * md-sakura.css - Sakura CSS Markdown Styling
+ * =============================================================================
+ * A minimal, classless CSS framework with cherry blossom aesthetics.
+ * Uses system fonts, no external font loading required.
+ *
+ * Based on: https://github.com/oxalorg/sakura
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * CSS CUSTOM PROPERTIES - Sakura Theme
+ * ============================================================================= */
+
+:root {
+  --sakura-color-blossom: #1d7484;
+  --sakura-color-blossom-light: #982c61;
+  --sakura-color-fade: #c9c9c9;
+  --sakura-color-bg: #f9f9f9;
+  --sakura-color-bg-alt: #f1f1f1;
+  --sakura-color-text: #4a4a4a;
+  --sakura-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif;
+  --sakura-font-mono: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+/* =============================================================================
+ * CONTAINER
+ * ============================================================================= */
+
+.md-sakura {
+  font-family: var(--sakura-font-family);
+  font-size: 1.8rem;
+  line-height: 1.618;
+  color: var(--sakura-color-text);
+  max-width: 38em;
+}
+
+/* Adjust font size for smaller base */
+@media (max-width: 684px) {
+  .md-sakura {
+    font-size: 1.53rem;
+  }
+}
+
+@media (max-width: 382px) {
+  .md-sakura {
+    font-size: 1.35rem;
+  }
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-sakura h1,
+.md-sakura h2,
+.md-sakura h3,
+.md-sakura h4,
+.md-sakura h5,
+.md-sakura h6 {
+  line-height: 1.1;
+  font-weight: 700;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.md-sakura h1 {
+  font-size: 2.35em;
+  margin-top: 0;
+}
+
+.md-sakura h2 {
+  font-size: 2em;
+}
+
+.md-sakura h3 {
+  font-size: 1.75em;
+}
+
+.md-sakura h4 {
+  font-size: 1.5em;
+}
+
+.md-sakura h5 {
+  font-size: 1.25em;
+}
+
+.md-sakura h6 {
+  font-size: 1em;
+}
+
+.md-sakura p {
+  margin-top: 0;
+  margin-bottom: 2.5rem;
+}
+
+.md-sakura small,
+.md-sakura sub,
+.md-sakura sup {
+  font-size: 75%;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-sakura a {
+  color: var(--sakura-color-blossom);
+  text-decoration: none;
+}
+
+.md-sakura a:hover {
+  color: var(--sakura-color-blossom-light);
+  border-bottom: 2px solid var(--sakura-color-text);
+}
+
+.md-sakura a:visited {
+  color: var(--sakura-color-blossom-light);
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-sakura ul,
+.md-sakura ol {
+  margin-top: 0;
+  margin-bottom: 2.5rem;
+  padding-left: 2em;
+}
+
+.md-sakura ul {
+  list-style-type: disc;
+}
+
+.md-sakura ol {
+  list-style-type: decimal;
+}
+
+.md-sakura ul ul,
+.md-sakura ul ol,
+.md-sakura ol ul,
+.md-sakura ol ol {
+  margin-bottom: 0;
+}
+
+.md-sakura li {
+  margin-bottom: 1rem;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-sakura code {
+  padding: 0.2rem 0.5rem;
+  font-family: var(--sakura-font-mono);
+  font-size: 0.9em;
+  white-space: nowrap;
+  background: var(--sakura-color-bg-alt);
+  border: 1px solid var(--sakura-color-fade);
+  border-radius: 4px;
+}
+
+.md-sakura pre {
+  background: var(--sakura-color-bg-alt);
+  border: 1px solid var(--sakura-color-fade);
+  border-left: 3px solid var(--sakura-color-blossom);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2.5rem;
+  overflow-x: auto;
+  border-radius: 0 4px 4px 0;
+}
+
+.md-sakura pre code {
+  background: inherit;
+  font-size: inherit;
+  border: none;
+  padding: 0;
+  white-space: pre;
+  border-radius: 0;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-sakura blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 2.5rem;
+  padding: 1rem 1.5rem;
+  border-left: 3px solid var(--sakura-color-blossom);
+  background: var(--sakura-color-bg-alt);
+  border-radius: 0 4px 4px 0;
+}
+
+.md-sakura blockquote p {
+  margin-bottom: 0;
+}
+
+.md-sakura cite {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.875em;
+  text-align: right;
+  color: #666;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-sakura table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.md-sakura th,
+.md-sakura td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--sakura-color-fade);
+}
+
+.md-sakura th {
+  font-weight: 700;
+  border-bottom: 2px solid var(--sakura-color-blossom);
+}
+
+.md-sakura tbody tr:hover {
+  background: var(--sakura-color-bg-alt);
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-sakura hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 2px solid var(--sakura-color-fade);
+}
+
+/* =============================================================================
+ * IMAGES & FIGURES
+ * ============================================================================= */
+
+.md-sakura img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 2.5rem auto;
+}
+
+.md-sakura figure {
+  margin: 0 0 2.5rem 0;
+}
+
+.md-sakura figure img {
+  margin-bottom: 1rem;
+}
+
+.md-sakura figcaption {
+  font-size: 0.875em;
+  color: #666;
+  text-align: center;
+}
+
+/* =============================================================================
+ * DEFINITION LISTS
+ * ============================================================================= */
+
+.md-sakura dl {
+  margin-bottom: 2.5rem;
+}
+
+.md-sakura dt {
+  font-weight: 700;
+}
+
+.md-sakura dd {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* =============================================================================
+ * KEYBOARD & MARK
+ * ============================================================================= */
+
+.md-sakura kbd {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-family: var(--sakura-font-mono);
+  font-size: 0.875em;
+  line-height: 1;
+  background: var(--sakura-color-bg-alt);
+  border: 1px solid var(--sakura-color-fade);
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 var(--sakura-color-fade),
+    0 0 0 2px var(--sakura-color-bg) inset;
+}
+
+.md-sakura mark {
+  padding: 0.1rem 0.3rem;
+  background: #fce8b2;
+  border-radius: 2px;
+}
+
+/* =============================================================================
+ * ABBREVIATIONS
+ * ============================================================================= */
+
+.md-sakura abbr {
+  cursor: help;
+  border-bottom: 1px dotted var(--sakura-color-fade);
+}
+
+.md-sakura abbr[title] {
+  text-decoration: none;
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-sakura {
+    font-size: 12pt;
+    max-width: none;
+    color: black;
+  }
+
+  .md-sakura h1,
+  .md-sakura h2,
+  .md-sakura h3 {
+    page-break-after: avoid;
+  }
+
+  .md-sakura a {
+    color: black;
+    text-decoration: underline;
+  }
+
+  .md-sakura a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.75em;
+    color: #666;
+  }
+
+  .md-sakura pre,
+  .md-sakura blockquote,
+  .md-sakura img,
+  .md-sakura table {
+    page-break-inside: avoid;
+  }
+
+  .md-sakura pre,
+  .md-sakura blockquote,
+  .md-sakura code {
+    background: #f5f5f5;
+    border-color: #ccc;
+  }
+}

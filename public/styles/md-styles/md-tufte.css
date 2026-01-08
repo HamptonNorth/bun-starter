@@ -1,0 +1,295 @@
+/* version 1.1 Claude Opus 4.5 */
+/* =============================================================================
+ * md-tufte.css - Tufte CSS Markdown Styling (Self-contained)
+ * =============================================================================
+ * Edward Tufte-inspired design with elegant typography.
+ * Uses system serif fonts (Palatino, Georgia) - no external fonts required.
+ *
+ * IMPORTANT: This is a self-contained stylesheet with all styles scoped to
+ * the .md-tufte wrapper class. No CDN imports to prevent CSS leakage.
+ *
+ * Based on: https://edwardtufte.github.io/tufte-css/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * SCOPING - Apply Tufte styles within .md-tufte container
+ * ============================================================================= */
+
+.md-tufte {
+  font-family:
+    et-book, Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
+  background-color: #fffff8;
+  color: #111;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  padding: 1rem 2rem;
+  margin: 8px;
+  max-width: 1400px;
+}
+
+/* Reduce margin on mobile */
+@media (max-width: 768px) {
+  .md-tufte {
+    margin: 4px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-tufte h1,
+.md-tufte h2,
+.md-tufte h3 {
+  font-weight: 400;
+  line-height: 1.25;
+  color: #111;
+}
+
+.md-tufte h1 {
+  font-size: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.md-tufte h2 {
+  font-size: 1.6rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.md-tufte h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.md-tufte p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  width: 55%;
+}
+
+/* First paragraph after heading - no indent, small caps start */
+.md-tufte h1 + p,
+.md-tufte h2 + p,
+.md-tufte h3 + p {
+  text-indent: 0;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-tufte a {
+  color: #111;
+  text-decoration: none;
+  background:
+    linear-gradient(#fffff8, #fffff8), linear-gradient(#fffff8, #fffff8),
+    linear-gradient(currentColor, currentColor);
+  background-size:
+    0.05em 1px,
+    0.05em 1px,
+    1px 1px;
+  background-repeat: no-repeat, no-repeat, repeat-x;
+  background-position:
+    0% 93%,
+    100% 93%,
+    0% 93%;
+  text-shadow:
+    0.03em 0 #fffff8,
+    -0.03em 0 #fffff8,
+    0 0.03em #fffff8,
+    0 -0.03em #fffff8;
+}
+
+.md-tufte a:hover {
+  color: #2563eb;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-tufte ul,
+.md-tufte ol {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-left: 2em;
+  width: 52.5%;
+}
+
+.md-tufte li {
+  margin-bottom: 0.5em;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-tufte code {
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.9em;
+  padding: 0.1em 0.3em;
+  background-color: #f0f0e8;
+  border-radius: 0.25rem;
+}
+
+.md-tufte pre {
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 0.85em;
+  line-height: 1.5;
+  padding: 1em;
+  overflow-x: auto;
+  background-color: #f0f0e8;
+  margin: 1.5em 0;
+  width: 52.5%;
+}
+
+.md-tufte pre code {
+  padding: 0;
+  background-color: transparent;
+  font-size: 100%;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-tufte blockquote {
+  font-style: italic;
+  margin: 1.5em 0 1.5em 2em;
+  padding-left: 1em;
+  border-left: 3px solid #ccc;
+  width: 50%;
+}
+
+.md-tufte blockquote p {
+  width: 100%;
+}
+
+.md-tufte blockquote footer {
+  font-style: normal;
+  font-size: 0.9em;
+  color: #666;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-tufte table {
+  width: 55%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.9em;
+}
+
+.md-tufte th,
+.md-tufte td {
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+.md-tufte th {
+  font-weight: 600;
+  border-bottom: 2px solid #111;
+}
+
+.md-tufte tbody tr:last-child td {
+  border-bottom: 2px solid #111;
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-tufte hr {
+  width: 55%;
+  height: 1px;
+  margin: 2em 0;
+  background-color: #ccc;
+  border: 0;
+}
+
+/* =============================================================================
+ * IMAGES & FIGURES
+ * ============================================================================= */
+
+.md-tufte img {
+  max-width: 100%;
+  height: auto;
+}
+
+.md-tufte figure {
+  margin: 2em 0;
+}
+
+.md-tufte figcaption {
+  font-size: 0.85em;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+/* =============================================================================
+ * RESPONSIVE - Full width on smaller screens
+ * ============================================================================= */
+
+@media (max-width: 1024px) {
+  .md-tufte p,
+  .md-tufte ul,
+  .md-tufte ol,
+  .md-tufte pre,
+  .md-tufte table,
+  .md-tufte blockquote,
+  .md-tufte hr {
+    width: 100%;
+  }
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-tufte {
+    font-size: 11pt;
+    background-color: #fff;
+    padding: 0;
+  }
+
+  .md-tufte p,
+  .md-tufte ul,
+  .md-tufte ol,
+  .md-tufte pre,
+  .md-tufte table,
+  .md-tufte blockquote {
+    width: 100%;
+  }
+
+  .md-tufte a {
+    color: inherit;
+    text-shadow: none;
+    background: none;
+    text-decoration: underline;
+  }
+
+  .md-tufte h1,
+  .md-tufte h2,
+  .md-tufte h3 {
+    page-break-after: avoid;
+  }
+
+  .md-tufte pre,
+  .md-tufte blockquote,
+  .md-tufte figure {
+    page-break-inside: avoid;
+  }
+}

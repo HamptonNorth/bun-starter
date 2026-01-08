@@ -1,0 +1,255 @@
+/* version 1.1 Claude Opus 4.5 */
+/* =============================================================================
+ * md-water.css - Water CSS Markdown Styling (Scoped)
+ * =============================================================================
+ * A classless CSS framework adaptation for markdown content.
+ * Water CSS is a tiny framework that makes simple pages beautiful.
+ *
+ * IMPORTANT: This is a self-contained stylesheet with all styles scoped to
+ * the .md-water wrapper class. No CDN imports to prevent CSS leakage.
+ *
+ * Based on: https://watercss.kognise.dev/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * SCOPING - Override Water styles within .md-water container
+ * ============================================================================= */
+
+.md-water {
+  --background-body: #ffffff;
+  --background: #f6f8fa;
+  --background-alt: #f0f4f8;
+  --text-main: #24292f;
+  --text-bright: #111827;
+  --text-muted: #57606a;
+  --links: #2563eb;
+  --focus: #2563eb;
+  --border: #d0d7de;
+  --code: #24292f;
+  --animation-duration: 0.1s;
+  --button-hover: #1d4ed8;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.35);
+  --form-placeholder: #57606a;
+  --form-text: #24292f;
+  --variable: #6f42c1;
+  --highlight: #fff3cd;
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2357606a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-water h1,
+.md-water h2,
+.md-water h3,
+.md-water h4,
+.md-water h5,
+.md-water h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-bright);
+}
+
+.md-water h1 {
+  font-size: 2em;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+
+.md-water h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+
+.md-water h3 {
+  font-size: 1.25em;
+}
+
+.md-water h4 {
+  font-size: 1em;
+}
+
+.md-water p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-water a {
+  color: var(--links);
+  text-decoration: none;
+}
+
+.md-water a:hover {
+  text-decoration: underline;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-water ul,
+.md-water ol {
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 2em;
+}
+
+.md-water ul ul,
+.md-water ul ol,
+.md-water ol ul,
+.md-water ol ol {
+  margin-bottom: 0;
+}
+
+.md-water li {
+  margin-bottom: 0.25em;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-water code {
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  background-color: var(--background);
+  border-radius: 0.25rem;
+  color: var(--code);
+}
+
+.md-water pre {
+  padding: 1em;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--background);
+  border-radius: 0.375rem;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.md-water pre code {
+  padding: 0;
+  background-color: transparent;
+  font-size: 100%;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-water blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  color: var(--text-muted);
+  border-left: 0.25em solid var(--border);
+  background-color: var(--background-alt);
+}
+
+.md-water blockquote > :first-child {
+  margin-top: 0;
+}
+
+.md-water blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-water table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.md-water th,
+.md-water td {
+  padding: 0.75em 1em;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.md-water th {
+  font-weight: 600;
+  background-color: var(--background);
+}
+
+.md-water tr:nth-child(even) {
+  background-color: var(--background-alt);
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-water hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 1.5em 0;
+  background-color: var(--border);
+  border: 0;
+}
+
+/* =============================================================================
+ * IMAGES
+ * ============================================================================= */
+
+.md-water img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-water {
+    font-size: 11pt;
+    color: #000;
+  }
+
+  .md-water a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .md-water h1,
+  .md-water h2,
+  .md-water h3 {
+    page-break-after: avoid;
+  }
+
+  .md-water pre,
+  .md-water blockquote {
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,252 @@
+/* version 1.1 Claude Opus 4.5 */
+/* =============================================================================
+ * md-pico.css - Pico CSS Markdown Styling (Scoped)
+ * =============================================================================
+ * A minimal classless CSS framework adaptation for markdown content.
+ * Pico CSS uses system fonts and requires no external font loading.
+ *
+ * IMPORTANT: This is a self-contained stylesheet with all styles scoped to
+ * the .md-pico wrapper class. No CDN imports to prevent CSS leakage.
+ *
+ * Based on: https://picocss.com/
+ * License: MIT
+ * ============================================================================= */
+
+/* =============================================================================
+ * SCOPING - Apply Pico styles only within .md-pico container
+ * ============================================================================= */
+
+/* Reset any global Pico styles outside our container */
+:root {
+  --pico-font-family:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --pico-line-height: 1.6;
+  --pico-font-weight: 400;
+  --pico-font-size: 100%;
+  --pico-border-radius: 0.25rem;
+  --pico-spacing: 1rem;
+  --pico-color: #24292f;
+  --pico-background-color: #ffffff;
+  --pico-muted-color: #57606a;
+  --pico-primary: #2563eb;
+  --pico-primary-hover: #1d4ed8;
+  --pico-code-background-color: #f6f8fa;
+  --pico-code-color: #24292f;
+  --pico-blockquote-border-color: #d0d7de;
+}
+
+/* Container wrapper */
+.md-pico {
+  font-family: var(--pico-font-family);
+  font-size: var(--pico-font-size);
+  line-height: var(--pico-line-height);
+  color: var(--pico-color);
+}
+
+/* =============================================================================
+ * TYPOGRAPHY
+ * ============================================================================= */
+
+.md-pico h1,
+.md-pico h2,
+.md-pico h3,
+.md-pico h4,
+.md-pico h5,
+.md-pico h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--pico-color);
+}
+
+.md-pico h1 {
+  font-size: 2em;
+  margin-top: 0;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.md-pico h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.md-pico h3 {
+  font-size: 1.25em;
+}
+
+.md-pico h4 {
+  font-size: 1em;
+}
+
+.md-pico p {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+/* =============================================================================
+ * LINKS
+ * ============================================================================= */
+
+.md-pico a {
+  color: var(--pico-primary);
+  text-decoration: none;
+}
+
+.md-pico a:hover {
+  color: var(--pico-primary-hover);
+  text-decoration: underline;
+}
+
+/* =============================================================================
+ * LISTS
+ * ============================================================================= */
+
+.md-pico ul,
+.md-pico ol {
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 2em;
+}
+
+.md-pico ul ul,
+.md-pico ul ol,
+.md-pico ol ul,
+.md-pico ol ol {
+  margin-bottom: 0;
+}
+
+.md-pico li {
+  margin-bottom: 0.25em;
+}
+
+.md-pico li + li {
+  margin-top: 0.25em;
+}
+
+/* =============================================================================
+ * CODE
+ * ============================================================================= */
+
+.md-pico code {
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  background-color: var(--pico-code-background-color);
+  border-radius: var(--pico-border-radius);
+  color: var(--pico-code-color);
+}
+
+.md-pico pre {
+  padding: 1em;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--pico-code-background-color);
+  border-radius: var(--pico-border-radius);
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.md-pico pre code {
+  padding: 0;
+  background-color: transparent;
+  font-size: 100%;
+}
+
+/* =============================================================================
+ * BLOCKQUOTES
+ * ============================================================================= */
+
+.md-pico blockquote {
+  margin: 1em 0;
+  padding: 0 1em;
+  color: var(--pico-muted-color);
+  border-left: 0.25em solid var(--pico-blockquote-border-color);
+}
+
+.md-pico blockquote > :first-child {
+  margin-top: 0;
+}
+
+.md-pico blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+ * TABLES
+ * ============================================================================= */
+
+.md-pico table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.md-pico th,
+.md-pico td {
+  padding: 0.5em 1em;
+  border: 1px solid #d0d7de;
+  text-align: left;
+}
+
+.md-pico th {
+  font-weight: 600;
+  background-color: #f6f8fa;
+}
+
+.md-pico tr:nth-child(even) {
+  background-color: #f6f8fa;
+}
+
+/* =============================================================================
+ * HORIZONTAL RULES
+ * ============================================================================= */
+
+.md-pico hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 1.5em 0;
+  background-color: #d0d7de;
+  border: 0;
+}
+
+/* =============================================================================
+ * IMAGES
+ * ============================================================================= */
+
+.md-pico img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--pico-border-radius);
+}
+
+/* =============================================================================
+ * PRINT STYLES
+ * ============================================================================= */
+
+@media print {
+  .md-pico {
+    font-size: 11pt;
+  }
+
+  .md-pico a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .md-pico h1,
+  .md-pico h2,
+  .md-pico h3 {
+    page-break-after: avoid;
+  }
+
+  .md-pico pre,
+  .md-pico blockquote {
+    page-break-inside: avoid;
+  }
+}
