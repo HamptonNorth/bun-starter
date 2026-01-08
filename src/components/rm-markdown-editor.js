@@ -1,5 +1,6 @@
-// version 3.11 Gemini 3 Flash
+// version 3.12 Claude Opus 4.5
 // Complete Markdown Editor: Debounced Spellcheck, Multi-node Highlights, and Dynamic Pluralized Footer
+// Fixed: API response field name (raw instead of content)
 import { LitElement, html, css, nothing } from 'lit'
 
 export class RmMarkdownEditor extends LitElement {
@@ -118,8 +119,8 @@ export class RmMarkdownEditor extends LitElement {
       const response = await fetch(`/api/pages/raw/${this.category}/${this.slug}`)
       if (!response.ok) throw new Error(`Load failed: ${response.status}`)
       const data = await response.json()
-      this._originalContent = data.content || ''
-      this._currentContent = data.content || ''
+      this._originalContent = data.raw || ''
+      this._currentContent = data.raw || ''
       this._title = data.meta?.title || this.slug
       if (this._currentContent) this._runSpellCheck()
     } catch (err) {

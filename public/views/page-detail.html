@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- version 1.1    -->
+<!-- version 2.2    -->
 <!-- =============================================================================
      PAGE DETAIL VIEW
      =============================================================================
@@ -13,6 +13,9 @@
      Read Mode:
      Front matter 'read-mode: true' constrains content to 720px width centered,
      optimized for reading long prose. Defaults to false if not present.
+
+     Edit Mode:
+     Admin users can view/edit the raw markdown via the rm-markdown-editor modal.
 
      The style system is fully extensible - adding new styles requires:
      1. Creating a CSS file in /styles/md-styles/
@@ -48,7 +51,9 @@
         min-width: 200px;
         max-width: 100%;
         margin: 0 auto;
-        padding: 1rem 0;
+        /* Only set vertical padding - let themes control horizontal padding */
+        padding-top: 1rem;
+        padding-bottom: 0;
       }
 
       /* =========================================================================
@@ -99,104 +104,62 @@
         border-color: #10b981;
       }
 
-      @media (max-width: 767px) {
-        #markdown-content {
-          padding: 15px 0;
+      /* =========================================================================
+       * SIDEBAR MOBILE TOGGLE
+       * ========================================================================= */
+      @media (max-width: 768px) {
+        #sidebar-content {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease-out;
+        }
+
+        #sidebar-content.block {
+          max-height: 80vh;
+          overflow-y: auto;
         }
       }
 
       /* =========================================================================
-       * PRINT STYLES - A4 Base (individual styles add their own print rules)
+       * PRINT STYLES - Hide non-essential elements
        * ========================================================================= */
       @media print {
-        /* Hide navigation and UI elements */
+        /* Hide navigation and controls */
         rm-nav-header,
         rm-footer,
-        aside,
         #sidebar-col,
-        #top-back-link,
         #btn-print,
-        .copy-btn,
-        #mobile-menu-trigger {
+        #edit-links,
+        .code-wrapper .copy-btn,
+        #top-back-link {
           display: none !important;
         }
 
         /* Reset layout for print */
-        body,
-        html,
-        rm-default-container,
-        #layout-wrapper,
-        main,
-        article {
-          display: block !important;
+        body {
+          background: white !important;
+        }
+
+        main {
           width: 100% !important;
-          margin: 0 !important;
           padding: 0 !important;
-          background: #fff !important;
         }
 
-        /* Content container print reset */
-        #markdown-content {
-          box-sizing: border-box;
-          min-width: 200px;
-          max-width: 100%;
-          margin: 0;
-          padding: 0;
-        }
-
-        /* Ensure first child has no top margin */
-        #markdown-content > *:first-child {
-          margin-top: 0 !important;
-        }
-
-        /* =================================================================
-         * Print Header Block - Title & Date
-         * Compact, visually distinct from content
-         * ================================================================= */
-
-        /* Header container - compact with subtle distinction */
         #page-header {
-          background-color: #f8f9fa !important;
-          border: none !important;
-          border-bottom: 1.5pt solid #d1d5db !important;
-          padding: 8pt 0 6pt 0 !important;
-          margin: 0 0 12pt 0 !important;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
+          border-bottom: 1px solid #ccc !important;
         }
 
-        /* Title - compact */
-        #page-title {
-          font-size: 13pt !important;
-          font-weight: 600 !important;
-          line-height: 1.15 !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          color: #111827 !important;
+        article {
+          break-inside: avoid;
         }
 
-        /* Date - smaller, muted, tight spacing */
-        #page-date {
-          font-size: 8pt !important;
-          font-family: ui-monospace, SFMono-Regular, monospace !important;
-          color: #6b7280 !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          display: inline-block !important;
-          letter-spacing: 0.02em;
+        pre,
+        code {
+          white-space: pre-wrap !important;
+          word-wrap: break-word !important;
         }
 
-        /* Tighten the date wrapper row */
-        #page-header > div:last-child {
-          margin-top: 2pt !important;
-        }
-
-        /* Content wrapper - remove extra top spacing */
-        #markdown-content {
-          margin-top: 0 !important;
-        }
-
-        /* Container padding for print */
+        /* Remove padding for print */
         .px-6,
         .md\:px-12 {
           padding-left: 0 !important;
@@ -302,6 +265,24 @@
                   class="hidden rounded-full border border-amber-200 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800"
                   >Private</span
                 >
+                <!-- Admin Edit Links (hidden by default, shown if user is admin) -->
+                <span id="edit-links" class="text-primary-400 hidden text-xs">
+                  <button
+                    onclick="window.openPageEditor('view')"
+                    class="hover:text-primary-600 transition-colors hover:underline"
+                    title="View raw markdown"
+                  >
+                    view
+                  </button>
+                  <span class="text-primary-300">|</span>
+                  <button
+                    onclick="window.openPageEditor('edit')"
+                    class="hover:text-secondary-600 transition-colors hover:underline"
+                    title="Edit markdown"
+                  >
+                    edit
+                  </button>
+                </span>
               </div>
             </div>
 
@@ -325,6 +306,9 @@
       </div>
       <rm-footer></rm-footer>
     </rm-default-container>
+
+    <!-- Editor Modal Container -->
+    <div id="editor-container"></div>
 
     <!-- =========================================================================
          INITIALIZATION SCRIPT - Sidebar visibility
@@ -379,11 +363,23 @@
       var sidebarBackLink = document.getElementById('sidebar-back-link')
       var topBackLink = document.getElementById('top-back-link')
       var contentEl = document.getElementById('markdown-content')
+      var editLinksEl = document.getElementById('edit-links')
+
+      // Auth state
+      var isAdmin = false
+
+      // Editor state
+      var editorOpen = false
+      var editorMode = 'view'
+
+      // ==========================================================================
+      // INITIALIZATION
+      // ==========================================================================
 
       /**
        * Initialize page
        */
-      function init() {
+      async function init() {
         // Set back links
         if (category) {
           var listUrl = '/pages/' + category
@@ -420,6 +416,12 @@
           }
         }
 
+        // Check session and show edit links if admin
+        await checkSession()
+        if (isAdmin && editLinksEl) {
+          editLinksEl.classList.remove('hidden')
+        }
+
         // Hot reload support
         if (window.EventSource) {
           var evtSource = new EventSource('/api/hot-reload')
@@ -428,6 +430,107 @@
           }
         }
       }
+
+      // ==========================================================================
+      // SESSION MANAGEMENT
+      // ==========================================================================
+
+      /**
+       * Check current session and determine if user is admin
+       * Uses direct fetch to better-auth session endpoint
+       */
+      async function checkSession() {
+        try {
+          const response = await fetch('/api/auth/get-session', {
+            method: 'GET',
+            credentials: 'include', // Important: include cookies for session
+          })
+
+          if (!response.ok) {
+            isAdmin = false
+            return
+          }
+
+          const data = await response.json()
+
+          if (data && data.user) {
+            isAdmin = data.user.role === 'admin'
+          } else {
+            isAdmin = false
+          }
+        } catch (err) {
+          console.error('Session check failed:', err)
+          isAdmin = false
+        }
+      }
+
+      // ==========================================================================
+      // EDITOR MODAL MANAGEMENT
+      // ==========================================================================
+
+      /**
+       * Open the markdown editor modal
+       * @param {string} mode - 'view' or 'edit'
+       */
+      function openEditor(mode) {
+        editorOpen = true
+        editorMode = mode || 'view'
+        renderEditor()
+      }
+
+      /**
+       * Close the markdown editor modal
+       */
+      function closeEditor() {
+        editorOpen = false
+        editorMode = 'view'
+        renderEditor()
+      }
+
+      /**
+       * Handle save event from editor - reload page to reflect changes
+       */
+      function handleEditorSaved(e) {
+        console.log('File saved:', e.detail)
+        // Reload the page to show updated content
+        window.location.reload()
+      }
+
+      /**
+       * Render the editor modal (or clear it if closed)
+       */
+      function renderEditor() {
+        var container = document.getElementById('editor-container')
+        if (!editorOpen) {
+          container.innerHTML = ''
+          return
+        }
+
+        // Create the editor element
+        container.innerHTML = `
+          <rm-markdown-editor
+            id="md-editor"
+            category="${category}"
+            slug="${slug}"
+            mode="${editorMode}"
+          ></rm-markdown-editor>
+        `
+
+        // Get reference and set properties
+        var editor = document.getElementById('md-editor')
+        editor.isOpen = true
+        editor.category = category
+        editor.slug = slug
+        editor.mode = editorMode
+
+        // Add event listeners
+        editor.addEventListener('close', closeEditor)
+        editor.addEventListener('saved', handleEditorSaved)
+      }
+
+      // ==========================================================================
+      // SIDEBAR & NAVIGATION
+      // ==========================================================================
 
       /**
        * Load sidebar navigation links
@@ -468,6 +571,10 @@
             console.error('Sidebar load error:', e)
           })
       }
+
+      // ==========================================================================
+      // CONTENT LOADING (FALLBACK FOR NON-SSR)
+      // ==========================================================================
 
       /**
        * Load page content via API (fallback if SSR not available)
@@ -511,6 +618,10 @@
             console.error('Content load error:', e)
           })
       }
+
+      // ==========================================================================
+      // STYLE MANAGEMENT
+      // ==========================================================================
 
       /**
        * Apply style classes to the content container
@@ -571,6 +682,10 @@
         document.head.appendChild(link)
       }
 
+      // ==========================================================================
+      // CODE COPY BUTTONS
+      // ==========================================================================
+
       /**
        * Add copy buttons to code blocks
        */
@@ -610,6 +725,10 @@
         })
       }
 
+      // ==========================================================================
+      // GLOBAL FUNCTIONS (exposed to window)
+      // ==========================================================================
+
       /**
        * Toggle mobile menu visibility
        */
@@ -617,6 +736,12 @@
         var content = document.getElementById('sidebar-content')
         if (content) content.classList.toggle('hidden')
       }
+
+      /**
+       * Open the page editor modal
+       * @param {string} mode - 'view' or 'edit'
+       */
+      window.openPageEditor = openEditor
     </script>
   </body>
 </html>

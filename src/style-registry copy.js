@@ -1,6 +1,5 @@
-// version 1.2 Claude Opus 4.5
+// version 1.1 Claude Opus 4.5
 // Fixed: Google Fonts API v2 URL format (ital,wght@ syntax)
-// Fixed: Removed tufte CDN import (was causing CSS leak into header)
 // =============================================================================
 // STYLE REGISTRY - Extensible markdown style configuration
 // =============================================================================
@@ -160,7 +159,7 @@ export const FULL_STYLE_REGISTRY = {
   },
 
   // =========================================================================
-  // TUFTE STYLE (Self-contained - no CDN required)
+  // TUFTE STYLE (Requires ET Book Font)
   // =========================================================================
 
   // Tufte CSS: Edward Tufte-inspired styling
@@ -172,8 +171,8 @@ export const FULL_STYLE_REGISTRY = {
     removeProse: true,
     description: 'Edward Tufte-inspired design with sidenotes and elegant typography',
     googleFonts: [],
-    // Self-contained - uses system serif fonts (Palatino, Georgia)
-    cdnFonts: [],
+    // ET Book font from CDN - used by Tufte CSS
+    cdnFonts: ['https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css'],
   },
 
   // =========================================================================

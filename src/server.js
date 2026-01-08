@@ -1,5 +1,12 @@
-// version 17.2 Claude Opus 4.5
+// version 18.0 Claude Opus 4.5
 // =============================================================================
+// CHANGES from v18.0:
+// - REFACTOR: Style system moved to style-registry.js module
+// - NEW: Support for many new markdown styles (Pico, Water, Tufte, etc.)
+// - NEW: AVAILABLE_STYLES env var to control which styles are enabled
+// - NEW: Google Fonts and CDN font loading for styles that require them
+// - NEW: Style font links injected into SSR <head>
+//
 // CHANGES from v17.2:
 // - NEW: Front matter 'read-mode: true' support for narrower prose reading
 //        Sets meta.readMode boolean in SSR_DATA and API responses
@@ -39,6 +46,10 @@
 // PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"mcss-georgia"}'
 // Format: {"category":"style[:sidebar]", ...}
 //
+// AVAILABLE_STYLES Format:
+// AVAILABLE_STYLES="github","mcss-georgia","pico","tufte"
+// Comma-separated, quoted style names. If not set, all styles are available.
+//
 // CHANGES from v15.0:
 // - Added POST /api/pages/upload/:category - Upload markdown files (admin only)
 // - Added POST /api/media/upload/:category - Upload image files (admin only)
@@ -55,6 +66,23 @@ import { db } from './db-setup.js'
 import { handleApiRoutes } from './routes/api.js'
 import { readdir, watch } from 'node:fs/promises'
 import { marked } from 'marked'
+
+// =============================================================================
+// STYLE REGISTRY IMPORT
+// =============================================================================
+import {
+  buildStyleRegistry,
+  getStyleConfig as getStyleConfigFromRegistry,
+  getAvailableStyles as getAvailableStylesFromRegistry,
+  getStyleChoices,
+  getFontLinks,
+} from './style-registry.js'
+
+// Build the filtered style registry based on AVAILABLE_STYLES env var
+const STYLE_REGISTRY = buildStyleRegistry()
+
+// Log available styles at startup
+console.log(`[Styles] Available styles: ${Object.keys(STYLE_REGISTRY).join(', ')}`)
 
 // =============================================================================
 // SEARCH SERVICE IMPORT
@@ -101,80 +129,27 @@ const PORT = process.env.PORT || 3000
 initSearchIndex(db)
 
 // =============================================================================
-// STYLE REGISTRY - Extensible markdown style configuration
+// STYLE HELPER FUNCTIONS
 // =============================================================================
-// To add a new style:
-// 1. Create CSS file in /public/styles/md-styles/
-// 2. Add entry to STYLE_REGISTRY
-// 3. Use style name in PAGE_CONFIG or front matter
-// =============================================================================
-
-const STYLE_REGISTRY = {
-  // Default: Tailwind Typography (prose) with print optimizations
-  tailwind: {
-    name: 'tailwind',
-    label: 'Tailwind Prose',
-    cssFile: 'md-tailwind.css', // Print-only styles, screen uses Tailwind prose
-    wrapperClass: 'prose prose-slate max-w-none',
-    removeProse: false,
-    description: 'Clean, modern styling using Tailwind Typography',
-  },
-
-  // GitHub-flavored Markdown styling
-  github: {
-    name: 'github',
-    label: 'GitHub Style',
-    cssFile: 'md-github.css',
-    wrapperClass: 'md-github',
-    removeProse: true,
-    description: 'GitHub README-style markdown rendering',
-  },
-
-  // MCSS Georgia: Elegant serif typography
-  'mcss-georgia': {
-    name: 'mcss-georgia',
-    label: 'MCSS Georgia',
-    cssFile: 'md-mcss-georgia.css',
-    wrapperClass: 'md-mcss md-mcss-georgia',
-    removeProse: true,
-    description: 'Elegant serif typography for long-form reading',
-  },
-
-  // MCSS Verdana: Modern sans-serif typography
-  'mcss-verdana': {
-    name: 'mcss-verdana',
-    label: 'MCSS Verdana',
-    cssFile: 'md-mcss-verdana.css',
-    wrapperClass: 'md-mcss md-mcss-verdana',
-    removeProse: true,
-    description: 'Modern sans-serif style for technical documentation',
-  },
-
-  // MCSS Georgia Tight: Compact serif typography (12pt base)
-  'mcss-georgia-tight': {
-    name: 'mcss-georgia-tight',
-    label: 'MCSS Georgia Tight',
-    cssFile: 'md-mcss-georgia-tight.css',
-    wrapperClass: 'md-mcss md-mcss-georgia-tight',
-    removeProse: true,
-    description: 'Compact serif typography with 12pt base for denser content',
-  },
-}
 
 /**
  * Get style configuration by name
  * Falls back to 'tailwind' if style not found
+ *
+ * @param {string} styleName - Name of the style to look up
+ * @returns {Object} Style configuration object
  */
 function getStyleConfig(styleName) {
-  const normalizedName = (styleName || 'tailwind').toLowerCase().trim()
-  return STYLE_REGISTRY[normalizedName] || STYLE_REGISTRY['tailwind']
+  return getStyleConfigFromRegistry(styleName, STYLE_REGISTRY)
 }
 
 /**
  * Get all registered style names
+ *
+ * @returns {string[]} Array of available style names
  */
 function getAvailableStyles() {
-  return Object.keys(STYLE_REGISTRY)
+  return getAvailableStylesFromRegistry(STYLE_REGISTRY)
 }
 
 // --- BUILD STEP (Client Components Only) ---
@@ -252,6 +227,7 @@ const server = Bun.serve({
       return Response.json({
         styles: STYLE_REGISTRY,
         available: getAvailableStyles(),
+        choices: getStyleChoices(STYLE_REGISTRY),
       })
     }
 
@@ -448,103 +424,115 @@ function parseFrontMatter(text) {
  * POST /api/spellcheck
  * Runs CSpell against provided text using .cspell.json + SQLite words
  */
-// version 18.3 Gemini 2.0 Flash
-// version 18.3 Gemini 3 Flash
-// version 18.4 Gemini 3 Flash
-// [Add imports for path/url at the top]
-
-// version 18.4 Gemini 3 Flash
-// =============================================================================
-// Spellcheck Handler with Absolute Pathing and Isolation Logging
-// =============================================================================
-/**
- * POST /api/spellcheck
- * Explicitly tells CSpell to parse text as Markdown
- */
-// version 18.7 Gemini 3 Flash
-// FIXED: Enhanced Markdown awareness to strictly ignore code blocks and snippets
 async function handleSpellCheck(req) {
   try {
+    const { text, filename } = await req.json()
+    if (!text) {
+      return Response.json({ issues: [] })
+    }
+
+    // Check authentication - admin only
     const session = await auth.api.getSession({ headers: req.headers })
-    if (!session?.user || session.user.role !== 'admin')
-      return Response.json({ error: 'Unauthorized' }, { status: 403 })
+    if (!session?.user || session.user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 })
+    }
 
-    const { text } = await req.json()
-    const configPath = join(__dirname, '../.cspell.json')
-    const baseConfig = await readSettings(configPath)
+    // Load base settings from cspell.json
+    const configPath = join(__dirname, '../cspell.json')
+    let baseSettings = await readSettings(configPath)
 
-    const sqliteWords = db
+    // Get custom words from SQLite
+    const customWords = db
       .query('SELECT word FROM custom_dictionary')
       .all()
-      .map((r) => r.word)
+      .map((row) => row.word)
 
-    // Merge settings with explicit Markdown parser rules
-    const finalConfig = mergeSettings(baseConfig, {
-      words: sqliteWords,
-      languageId: 'markdown', // Ensure parser knows it's markdown
-      // Failsafe: Add regex to ignore everything inside backticks
-      ignoreRegExpList: [
-        '/`[^`]*`/', // Inline code
-        '/^```[\\s\\S]*?^```/gm', // Fenced code blocks
-      ],
+    // Merge custom words into settings
+    const finalSettings = mergeSettings(baseSettings, {
+      words: customWords,
     })
 
-    // Create document with explicit markdown URI
-    const doc = createTextDocument({ uri: 'editor.md', content: text, languageId: 'markdown' })
-    const result = await spellCheckDocument(doc, {}, finalConfig)
-
-    return Response.json({
-      errors: result.issues.map((issue) => ({
-        word: issue.text,
-        offset: issue.offset,
-        length: issue.text.length,
-      })),
+    // Create a text document for spellchecking
+    const doc = createTextDocument({
+      uri: filename || 'untitled.md',
+      content: text,
+      languageId: 'markdown',
     })
+
+    // Perform spellcheck
+    const result = await spellCheckDocument(doc, { generateSuggestions: true }, finalSettings)
+
+    // Transform issues for the client
+    const issues = result.issues.map((issue) => ({
+      text: issue.text,
+      offset: issue.offset,
+      line: issue.line?.offset || 0,
+      suggestions: issue.suggestions?.slice(0, 5) || [],
+    }))
+
+    return Response.json({ issues })
   } catch (err) {
-    console.error('[Spellcheck Error]:', err.stack)
-    return Response.json({ error: 'Spellcheck failed', message: err.message }, { status: 500 })
+    console.error('[Spellcheck] Error:', err)
+    return Response.json({ error: 'Spellcheck failed', details: err.message }, { status: 500 })
   }
 }
+
 /**
  * POST /api/dictionary/add
- * Persists a word to the global SQLite dictionary
+ * Add a word to the custom dictionary (SQLite)
  */
 async function handleAddtoDictionary(req) {
-  const session = await auth.api.getSession({ headers: req.headers })
-  if (!session?.user || session.user.role !== 'admin') {
-    return Response.json({ error: 'Unauthorized' }, { status: 403 })
-  }
-
   try {
     const { word } = await req.json()
-    db.run('INSERT OR IGNORE INTO custom_dictionary (word, added_by) VALUES (?, ?)', [
-      word,
+
+    if (!word || typeof word !== 'string') {
+      return Response.json({ error: 'Word is required' }, { status: 400 })
+    }
+
+    // Check authentication - admin only
+    const session = await auth.api.getSession({ headers: req.headers })
+    if (!session?.user || session.user.role !== 'admin') {
+      return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 })
+    }
+
+    // Clean the word
+    const cleanWord = word.trim().toLowerCase()
+    if (cleanWord.length === 0) {
+      return Response.json({ error: 'Invalid word' }, { status: 400 })
+    }
+
+    // Insert into dictionary (ignore if already exists)
+    db.run(
+      `INSERT OR IGNORE INTO custom_dictionary (word, added_by) VALUES (?, ?)`,
+      cleanWord,
       session.user.email,
-    ])
-    return Response.json({ success: true })
+    )
+
+    console.log(`[Dictionary] Added word "${cleanWord}" by ${session.user.email}`)
+
+    return Response.json({ success: true, word: cleanWord })
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 })
+    console.error('[Dictionary] Error:', err)
+    return Response.json({ error: 'Failed to add word', details: err.message }, { status: 500 })
   }
 }
 
 // =============================================================================
-// SSR PAGE DETAIL - Updated for extensible styles
+// SSR PAGE DETAIL RENDERING
 // =============================================================================
 
 async function servePageDetailSSR(req, category, slug) {
-  const filepath = './public/views/page-detail.html'
-  const file = Bun.file(filepath)
-  if (!(await file.exists())) return serve404()
+  const templatePath = './public/views/page-detail.html'
+  const templateFile = Bun.file(templatePath)
+  if (!(await templateFile.exists())) return serve404()
 
-  let html = await file.text()
+  let html = await templateFile.text()
 
   const mdPath = `./public/pages/${category}/${slug}.md`
   const mdFile = Bun.file(mdPath)
 
-  let meta = { title: 'The markdown content was not found' }
-  let contentHtml = `<div class="p-8 text-lg text-center text-error1">At: </div>`
-  contentHtml += `<div class="p-4 font-mono text-center text-error1">${mdPath} </div>`
-
+  let meta = {}
+  let contentHtml = ''
   let found = false
 
   if (await mdFile.exists()) {
@@ -620,6 +608,22 @@ window.STYLE_REGISTRY = ${JSON.stringify(STYLE_REGISTRY)};
 window.EFFECTIVE_STYLE = ${JSON.stringify(styleConfig)};
 </script>`
   html = html.replace('</head>', `${configScript}</head>`)
+
+  // =========================================================================
+  // INJECT FONT LINKS (Google Fonts, CDN fonts)
+  // =========================================================================
+  const fontLinks = getFontLinks(styleConfig)
+  if (fontLinks.length > 0) {
+    const fontLinkTags = fontLinks
+      .map((url) => `<link rel="stylesheet" href="${url}" />`)
+      .join('\n    ')
+    // Add preconnect for Google Fonts performance
+    const preconnects = fontLinks.some((url) => url.includes('googleapis.com'))
+      ? `<link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />`
+      : ''
+    html = html.replace('</head>', `${preconnects}\n    ${fontLinkTags}\n</head>`)
+  }
 
   // =========================================================================
   // INJECT STYLE CSS FILE (if needed)
@@ -755,15 +759,13 @@ async function handleSearchMeta(req) {
 
 /**
  * GET /api/pages/raw/:category/:slug
- * Returns the raw markdown content for editing
+ * Returns raw markdown content for editing
  * Requires admin role
  */
 async function handleGetRawMarkdown(req, path) {
   try {
     // Parse category and slug from path
-    // Path format: /api/pages/raw/:category/:slug
     const parts = path.split('/').filter((p) => p.length > 0)
-    // parts = ['api', 'pages', 'raw', 'category', 'slug']
     const category = parts[3]
     const slug = parts[4]
 
@@ -783,25 +785,23 @@ async function handleGetRawMarkdown(req, path) {
       return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 })
     }
 
-    // Build file path
+    // Read the markdown file
     const mdPath = `./public/pages/${category}/${slug}.md`
     const mdFile = Bun.file(mdPath)
 
-    // Check if file exists
     if (!(await mdFile.exists())) {
       return Response.json({ error: 'File not found' }, { status: 404 })
     }
 
-    // Read the raw content
     const content = await mdFile.text()
-
-    // Parse front matter to return metadata separately
-    const { attributes: meta } = parseFrontMatter(content)
+    const parsed = parseFrontMatter(content)
 
     return Response.json({
-      content: content,
-      meta: meta,
-      path: `${category}/${slug}.md`,
+      raw: content,
+      meta: parsed.attributes,
+      body: parsed.body,
+      category,
+      slug,
     })
   } catch (err) {
     console.error('Error reading raw markdown:', err)
@@ -811,7 +811,7 @@ async function handleGetRawMarkdown(req, path) {
 
 /**
  * PUT /api/pages/raw/:category/:slug
- * Saves the raw markdown content
+ * Saves markdown content
  * Requires admin role
  */
 async function handleSaveRawMarkdown(req, path) {
@@ -837,44 +837,25 @@ async function handleSaveRawMarkdown(req, path) {
       return Response.json({ error: 'Unauthorized: Admin access required' }, { status: 403 })
     }
 
-    // Parse request body
-    let body
-    try {
-      body = await req.json()
-    } catch (e) {
-      return Response.json({ error: 'Invalid JSON body' }, { status: 400 })
+    // Get the new content from request body
+    const { content } = await req.json()
+    if (typeof content !== 'string') {
+      return Response.json({ error: 'Content must be a string' }, { status: 400 })
     }
 
-    // Validate content
-    if (typeof body.content !== 'string') {
-      return Response.json({ error: 'Missing content field' }, { status: 400 })
-    }
-
-    // Build file path
+    // Write the file
     const mdPath = `./public/pages/${category}/${slug}.md`
-    const mdFile = Bun.file(mdPath)
+    await Bun.write(mdPath, content)
 
-    // Check if file exists (we only allow editing existing files, not creating new ones)
-    if (!(await mdFile.exists())) {
-      return Response.json({ error: 'File not found' }, { status: 404 })
-    }
-
-    // Write the content
-    await Bun.write(mdPath, body.content)
-
-    // Parse the new front matter to return updated metadata
-    const { attributes: meta } = parseFrontMatter(body.content)
-
-    console.log(`[Admin] Markdown file saved: ${mdPath} by ${session.user.email}`)
+    console.log(`[Admin] Markdown saved: ${mdPath} by ${session.user.email}`)
 
     return Response.json({
       success: true,
       message: 'File saved successfully',
-      path: `${category}/${slug}.md`,
-      meta: meta,
+      path: mdPath,
     })
   } catch (err) {
-    console.error('Error saving raw markdown:', err)
+    console.error('Error saving markdown:', err)
     return Response.json({ error: 'Server error' }, { status: 500 })
   }
 }
@@ -883,12 +864,12 @@ async function handleSaveRawMarkdown(req, path) {
 // FILE UPLOAD HANDLERS
 // =============================================================================
 
-// Allowed file extensions
-const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg']
-const ALLOWED_MD_EXTENSIONS = ['.md']
+// Allowed file extensions for uploads
+const ALLOWED_MARKDOWN_EXTENSIONS = ['.md']
+const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg']
 
 /**
- * Get file extension in lowercase
+ * Get file extension (lowercase)
  */
 function getFileExtension(filename) {
   const lastDot = filename.lastIndexOf('.')
@@ -897,82 +878,67 @@ function getFileExtension(filename) {
 }
 
 /**
- * Sanitize filename - remove special characters, keep extension
+ * Sanitize filename - remove problematic characters
  */
 function sanitizeFilename(filename) {
-  const ext = getFileExtension(filename)
-  const baseName = filename.slice(0, filename.lastIndexOf('.'))
-  // Replace spaces with hyphens, remove non-alphanumeric except hyphens and underscores
-  const sanitized = baseName
+  // Keep alphanumeric, dash, underscore, dot
+  // Replace spaces with dashes
+  // Remove any path separators
+  return filename
+    .replace(/[/\\]/g, '') // Remove path separators
+    .replace(/\s+/g, '-') // Replace spaces with dashes
+    .replace(/[^a-zA-Z0-9._-]/g, '') // Remove other special chars
+    .replace(/--+/g, '-') // Collapse multiple dashes
+    .replace(/^-|-$/g, '') // Trim leading/trailing dashes
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\-_]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-  return sanitized + ext
 }
 
 /**
- * Generate default front matter for markdown files
- * Now includes style field
+ * Ensure front matter exists with published: n
+ * If no front matter, adds default. If front matter exists, sets published: n
  */
-function generateDefaultFrontMatter(category) {
-  const now = new Date()
-  const isoDate = now.toISOString().split('T')[0] // YYYY-MM-DD format
+function ensureUnpublishedFrontMatter(content, category = 'general') {
+  const hasFrontMatter = content.trim().startsWith('---')
 
-  // Get the default style for this category
-  const categoryConfig = getPagesConfig().find((c) => c.name === category)
-  const defaultStyle = categoryConfig ? categoryConfig.style : 'github'
+  if (!hasFrontMatter) {
+    // Add default front matter
+    const today = new Date().toISOString().split('T')[0]
 
-  return `---
-title: Title (needs editing)
-summary: Summary (needs editing)
-created: ${isoDate}
+    // Get the default style for this category
+    const categoryStyle = getCategoryStyle(category)
+    const styleName = categoryStyle.name
+
+    const defaultFrontMatter = `---
+title: Untitled
+summary:
+created: ${today}
 published: n
 file-type: markdown
-style: ${defaultStyle}
-sticky: false
+style: ${styleName}
 ---
 
 `
-}
-
-/**
- * Check if content has front matter
- */
-function hasFrontMatter(content) {
-  return content.trim().startsWith('---')
-}
-
-/**
- * Ensure front matter has published: n for uploaded files
- * If front matter exists, set published to n
- * If no front matter, add default front matter
- */
-function ensureUnpublishedFrontMatter(content, category) {
-  if (!hasFrontMatter(content)) {
-    // No front matter - add default
-    return generateDefaultFrontMatter(category) + content
+    return defaultFrontMatter + content
   }
 
   // Has front matter - ensure published: n
-  const fmMatch = content.match(/^---\n([\s\S]*?)\n---/)
-  if (!fmMatch) {
-    return generateDefaultFrontMatter(category) + content
-  }
+  // Parse and rebuild
+  const match = content.match(/^---\n([\s\S]*?)\n---/)
+  if (!match) return content
 
-  const frontMatter = fmMatch[1]
-  const afterFrontMatter = content.slice(fmMatch[0].length)
+  let frontMatter = match[1]
+  const body = content.slice(match[0].length)
 
-  // Check if published line exists
+  // Check if published key exists
   if (/^published\s*:/m.test(frontMatter)) {
-    // Replace existing published line with n
-    const updatedFm = frontMatter.replace(/^published\s*:.*$/m, 'published: n')
-    return '---\n' + updatedFm + '\n---' + afterFrontMatter
+    // Replace existing published value
+    frontMatter = frontMatter.replace(/^(published\s*:\s*).*$/m, '$1n')
   } else {
-    // Add published: n line to front matter
-    return '---\n' + frontMatter + '\npublished: n\n---' + afterFrontMatter
+    // Add published: n
+    frontMatter = frontMatter.trim() + '\npublished: n'
   }
+
+  return `---\n${frontMatter}\n---${body}`
 }
 
 /**
@@ -1012,13 +978,18 @@ async function handleMarkdownUpload(req, path) {
 
     // Validate file extension
     const ext = getFileExtension(file.name)
-    if (!ALLOWED_MD_EXTENSIONS.includes(ext)) {
-      return Response.json({ error: 'Invalid file type. Only .md files allowed.' }, { status: 400 })
+    if (!ALLOWED_MARKDOWN_EXTENSIONS.includes(ext)) {
+      return Response.json(
+        {
+          error: `Invalid file type. Allowed: ${ALLOWED_MARKDOWN_EXTENSIONS.join(', ')}`,
+        },
+        { status: 400 },
+      )
     }
 
     // Sanitize filename
     const sanitizedName = sanitizeFilename(file.name)
-    if (!sanitizedName || sanitizedName === ext) {
+    if (!sanitizedName || sanitizedName === '.md') {
       return Response.json({ error: 'Invalid filename' }, { status: 400 })
     }
 
@@ -1041,7 +1012,7 @@ async function handleMarkdownUpload(req, path) {
       )
     }
 
-    // Read file content
+    // Get file content
     let content = await file.text()
 
     // Ensure front matter with published: n (pass category for default style)
