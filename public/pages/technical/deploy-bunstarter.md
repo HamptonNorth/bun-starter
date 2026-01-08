@@ -108,7 +108,7 @@ bun run dev
 
 ```
 
-If this is a new setup, the app may stop and ask you to run `node --env-file=.env public/scripts/setup.js` to create the better-auth empty SQLite tables and the default admin user. The setting for the default admin user are in `.env`
+If this is a new setup, the app may stop and ask you to run `node --env-file=.env public/scripts/setup.js` to create the better-auth empty SQLite tables and the default admin user. The settings for the default admin user are in `.env`
 
 If the app runs okay, close the bun run dev using `ctrl+C` and the restart the `systemctl`
 
@@ -121,7 +121,7 @@ sudo systemctl start bun-starter.service
 Should be good to go.
 
 ### Cloudflare tunnels
-As bunstarter running on `nuc2023` is exposed to the internet using Cloudflare Tunnels, you may not see newly deployed content immediately. The home page `index.html` will remain cached for some time but you can view say new markdown `/pages/*` content for example. 
+As bunstarter running on `nuc2023` is exposed to the internet using Cloudflare Tunnels, you may not see newly deployed content immediately. The home page `index.html` will remain cached for some time. 
 
 Simply login into Cloudflare and on the `redmug.dev` page:
 1) Set to developer mode

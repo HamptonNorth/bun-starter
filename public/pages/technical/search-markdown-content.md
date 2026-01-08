@@ -33,8 +33,8 @@ To keep the search flexible, the key settings in the code base are:
 
 ``` javascript
 SEARCH_MIN_QUERY_LENGTH = 3
-SEARCH_MAX_RESULTS = 20 
-SEARCH_CONTEXT_CHARS = 30
+SEARCH_MAX_RESULTS = 25 
+SEARCH_CONTEXT_CHARS = 60
 ```
 If the signed in user has `role=admin` the search results will include any unpublished pages that match.
 
@@ -61,7 +61,7 @@ Searches are matched left-to-right, at word-start and are case-insensitive.
 ## API endpoints
 To search across all pages:
 ```javascript
-# limit is optional and defaults to 20 and has a max of 50
+# limit is optional and defaults to 25 and has a max of 50
 GET /api/pages/search?q=<query>&limit=50   
 ```
 This might return:
@@ -89,18 +89,18 @@ This might return:
 
 
 ## Source files and what they do
-##### 1. `src/services/pages-search.js`
+#### 1. `src/services/pages-search.js`
 The search service provides:
 - SQLite FTS5 full-text search index
 - Weighted content extraction from markdown
 - Prefix matching (left-to-right, word-start, case-insensitive)
 - Access control (admin sees unpublished, email-matched private pages)
 
-##### 2. `src/server.js` (modified)
+#### 2. `src/server.js` (modified)
 Updated with:
 - Import and initialization of search service
 - Three new API endpoints - `POST /api/pages/reindex`, `GET /api/pages/search-meta` and `GET /api/pages/search?q=<query>`
 - Integration with existing auth system
 
-##### 3. `rm-pages-search-modal.js`
+#### 3. `rm-pages-search-modal.js`
 New custom component to surface the modal search page that accept the input of a search string and returns the resulting matched pages in 'weighted order`.

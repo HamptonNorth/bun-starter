@@ -39,13 +39,16 @@ style: mcss-georgia
 
 ## Available Styles
 
-| Style Name | Description | Best For |
-|------------|-------------|----------|
-| `tailwind` | Clean, modern Tailwind Typography | General content (default) |
-| `github` | GitHub README-style rendering | Technical docs, READMEs |
-| `mcss-georgia` | Elegant serif typography | Long-form reading, essays |
-| `mcss-georgia-tight` | Compact serif (12pt base) | Dense content, documentation |
-| `mcss-verdana` | Modern sans-serif | Technical documentation |
+The full list of available styles can be seen in the `.env` file. Note the administrator is expected to limit the available style to acheive a consistent side wide rendering of pages.
+
+```javascript
+
+AVAILABLE_STYLES="tailwind","github","mcss-georgia","mcss-verdana","mcss-georgia-tight",
+"pico","water","water-dark","sakura","new-css","tufte","splendor","modest","retro","air"
+
+```
+
+The category `test-styles` provides a sample page for each style.
 
 ## Style Priority
 
@@ -95,16 +98,21 @@ In `server.js`, add to `STYLE_REGISTRY`:
 const STYLE_REGISTRY = {
   // ... existing styles ...
 
-  'your-style': {
-    name: 'your-style',
-    label: 'Your Style Name',
-    cssFile: 'md-your-style.css',
-    wrapperClass: 'md-your-style',
-    removeProse: true, // Remove Tailwind prose classes?
-    description: 'Description of your style',
-  },
+   // Modest: Clean sans-serif with Open Sans
+   modest: {
+     name: 'modest',
+     label: 'Modest',
+     cssFile: 'md-modest.css',
+     wrapperClass: 'md-modest',
+     removeProse: true,
+     description: 'Rather modest styling with Open Sans font',
+     googleFonts: ['Open+Sans:ital,wght@0,400;0,700;1,400;1,700'],
+     cdnFonts: [],
+   },
 }
 ```
+
+> Fonts may be loaded from Google Fonts or from a CDN.
 
 ### Step 3: Use Your Style
 
@@ -200,16 +208,6 @@ Response now includes style information:
 }
 ```
 
-## Style Configuration Properties
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | string | Unique identifier (used in front matter/config) |
-| `label` | string | Human-readable display name |
-| `cssFile` | string\|null | CSS filename in `/styles/md-styles/` (null for built-in) |
-| `wrapperClass` | string | CSS class(es) to apply to container |
-| `removeProse` | boolean | Whether to remove Tailwind prose classes |
-| `description` | string | Brief description of the style |
 
 ## Print Support
 
@@ -224,25 +222,6 @@ All styles include A4 print optimization with:
 
 To print, use the Print button or `Ctrl/Cmd + P`.
 
-## Migration from Old Format
-
-### Old Format (`.env`)
-```bash
-PAGES="start,technical:sidebar,rants"
-```
-
-### New Format (`.env`)
-```bash
-PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"mcss-georgia"}'
-```
-
-The old `PAGES` format is still supported for backwards compatibility but defaults all categories to `tailwind` style.
-
-## MCSS Credits
-
-The MCSS Georgia and Verdana styles are based on [Mike Mai's MCSS](https://github.com/mikemai2awesome/mcss) - a classless CSS framework for beautiful typography.
-
-## Troubleshooting
 
 ### Style not applying?
 
@@ -275,78 +254,73 @@ Then add it to the registry as a new style.
 ### Example .env 
 
 ```text
-
-# =============================================================================
-# EXAMPLE .env FILE - Extensible Markdown Styles Configuration
-# =============================================================================
-
-# =============================================================================
-# PAGE_CONFIG - Category to Style Mapping (NEW FORMAT - Recommended)
-# =============================================================================
-# 
-# Format: JSON object where:
-#   - Key: category name (folder name in /public/pages/)
-#   - Value: "style" or "style:sidebar"
-#
-# Available styles:
-#   - tailwind           : Clean Tailwind Typography (default)
-#   - github             : GitHub README-style rendering
-#   - mcss-georgia       : Elegant serif typography for reading
-#   - mcss-georgia-tight : Compact serif (12pt base) for dense content
-#   - mcss-verdana       : Modern sans-serif for technical docs
-#
-# Examples:
-# ---------
-
-# Basic usage - category with default style
-# PAGE_CONFIG='{"blog":"tailwind"}'
-
-# Category with sidebar enabled
-# PAGE_CONFIG='{"docs":"github:sidebar"}'
-
-# Multiple categories with different styles
-# PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"mcss-georgia","docs":"mcss-verdana"}'
-
-# Full example with all style types:
-PAGE_CONFIG='{"start":"github","technical":"github:sidebar","blog":"mcss-georgia","documentation":"mcss-verdana","notes":"tailwind"}'
-
-
-
-# =============================================================================
-# OTHER SETTINGS
-# =============================================================================
-
+# .env
 PORT=3000
 
-# Database
-DATABASE_URL="file:./data.db"
+# Default admin user created on running
+ADMIN_NAME=
+ADMIN_EMAIL=
+# ADMIN_PASSWORD must be at least 8 characters, contain at least 1 uppercase letter and at least 1 number
+ADMIN_PASSWORD=
+BETTER_AUTH_SECRET=
+# URL of home page e.g. https://bunstarter.redmug.dev/
+BETTER_AUTH_URL=
 
-# Authentication
-BETTER_AUTH_SECRET="your-secret-here"
-BETTER_AUTH_URL="http://localhost:3000"
-
-# Temporary password expiry (hours)
 TEMP_PASSWORD_LAPSE_HOURS=48
 
+# database name including extension
+DATABASE_NAME=
+
+# version 0.0.0
+VERSION=0.8.9
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# On Github easier to have multiple CLIENT_ID and CLIENT_SECRET
+# for dev http://localhost:3000/
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+# for production https://bunstarter.redmug.dev/
+#GITHUB_CLIENT_ID=
+#GITHUB_CLIENT_SECRET=
+
+
+
+# Pages - Multiple categories with different styles
 # =============================================================================
-# STYLE QUICK REFERENCE
+# STYLE CONFIGURATION
 # =============================================================================
+# AVAILABLE_STYLES controls which markdown rendering styles are exposed
+# to the application. Format: comma-separated, quoted style names.
 #
-# | Style              | Best For                          | Print Optimized |
-# |--------------------|-----------------------------------|-----------------|
-# | tailwind           | General content, modern look      | Yes (A4)        |
-# | github             | READMEs, technical docs           | Yes (A4)        |
-# | mcss-georgia       | Essays, long-form reading         | Yes (A4)        |
-# | mcss-georgia-tight | Dense content, compact docs       | Yes (A4, 12pt)  |
-# | mcss-verdana       | Technical docs, code-heavy        | Yes (A4)        |
+# If not set or empty, ALL styles are available.
 #
-# Individual pages can override the category style using front matter:
+# Available style names:
+# - Core styles: tailwind, github, mcss-georgia, mcss-verdana, mcss-georgia-tight
+# - Classless CSS: pico, water, water-dark, sakura, new-css
+# - Typography-focused: tufte, splendor, modest, retro, air
 #
-#   ---
-#   title: My Special Document
-#   style: mcss-georgia
-#   ---
+# Examples:
+# AVAILABLE_STYLES="github","mcss-georgia","pico","tufte"
+# AVAILABLE_STYLES="tailwind","github","splendor","modest"
 #
-# Front matter 'style:' takes priority over PAGE_CONFIG defaults.
+# Full list (uncomment to enable all):
+# AVAILABLE_STYLES="tailwind","github","mcss-georgia","mcss-verdana","mcss-georgia-tight","pico","water","water-dark","sakura","new-css","tufte","splendor","modest","retro","air"
+
+AVAILABLE_STYLES="tailwind","github","mcss-georgia","pico","tufte"
+
+# =============================================================================
+# PAGE CONFIGURATION
+# =============================================================================
+# PAGE_CONFIG defines categories and their default styles.
+# Format: JSON object { "category": "style[:sidebar]" }
+#
+# Examples:
+# PAGE_CONFIG='{"docs":"github:sidebar","blog":"splendor","notes":"tufte"}'
+# PAGE_CONFIG='{"start":"tailwind","technical":"github:sidebar","rants":"mcss-georgia"}'
+
+PAGE_CONFIG='{"start":"github","technical":"github:sidebar","rants":"modest","test-styles":"github"}'
 
 ```
