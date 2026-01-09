@@ -120,7 +120,7 @@ function setupAmendMode() {
 
   productForm.reset()
 
-  productIdInput.classList.remove('border-green-500', 'border-red-300')
+  productIdInput.classList.remove('border-success-500', 'border-red-300')
   productIdInput.classList.add('border-slate-300')
 
   hideResponseMessage()
@@ -143,7 +143,7 @@ function setupDeleteMode() {
   descriptionInput.value = ''
   colourInput.value = ''
 
-  productIdInput.classList.remove('border-green-500', 'border-red-300')
+  productIdInput.classList.remove('border-success-500', 'border-red-300')
   productIdInput.classList.add('border-slate-300')
 
   hideResponseMessage()
@@ -174,13 +174,13 @@ function populateFormFromProductId(productId) {
     statusSettingInput.value = product.status_setting || 'Active'
 
     productIdInput.classList.remove('border-red-300', 'border-slate-300')
-    productIdInput.classList.add('border-green-500')
+    productIdInput.classList.add('border-success-500')
     hideResponseMessage()
   } else {
     if (productsCache.length === 0) {
       showInfoMessage('Please click "Get Test Products" first to load product data')
     } else {
-      productIdInput.classList.remove('border-green-500', 'border-slate-300')
+      productIdInput.classList.remove('border-success-500', 'border-slate-300')
       productIdInput.classList.add('border-red-300')
 
       if (currentMode === 'amend') {
@@ -196,7 +196,7 @@ function clearFormFields() {
   colourInput.value = ''
   statusSettingInput.value = 'inStock'
 
-  productIdInput.classList.remove('border-green-500', 'border-red-300')
+  productIdInput.classList.remove('border-success-500', 'border-red-300')
   productIdInput.classList.add('border-slate-300')
 }
 
@@ -377,7 +377,7 @@ function handleErrorResponse(data) {
 
 function showSuccessMessage(message) {
   responseMessage.className =
-    'mt-4 p-2 bg-green-100 border border-green-400 text-green-700 rounded-md'
+    'mt-4 p-2 bg-success-100 border border-success-400 text-success-700 rounded-md'
   responseMessage.textContent = message
   responseMessage.classList.remove('hidden')
 
