@@ -1,5 +1,10 @@
-// version 18.1 Claude Opus 4.5
+// version 18.2 Claude Sonnet 4.5
 // =============================================================================
+// CHANGES from v18.2:
+// - FIX: FOUC (Flash of Unstyled Content) prevention using CSS preload
+//        Style CSS now uses rel="preload" with onload conversion to stylesheet
+//        Eliminates visible flash when markdown styles load
+//
 // CHANGES from v18.1:
 // - FIX: Spellcheck now filters out issues in code blocks, inline code,
 //        URLs, email addresses, markdown links/images, and HTML tags
@@ -702,11 +707,18 @@ window.EFFECTIVE_STYLE = ${JSON.stringify(styleConfig)};
   }
 
   // =========================================================================
-  // INJECT STYLE CSS FILE (if needed)
+  // INJECT STYLE CSS FILE (if needed) - WITH PRELOAD TO PREVENT FOUC
   // =========================================================================
   if (styleConfig.cssFile) {
-    const cssLink = `<link rel="stylesheet" href="/styles/md-styles/${styleConfig.cssFile}" />`
-    html = html.replace('</head>', `${cssLink}</head>`)
+    const cssPath = `/styles/md-styles/${styleConfig.cssFile}`
+
+    // Use rel="preload" with immediate stylesheet conversion to prevent FOUC
+    // The onload handler changes rel to stylesheet once loaded
+    // Noscript fallback for browsers with JS disabled
+    const preloadLink = `<link rel="preload" href="${cssPath}" as="style" onload="this.onload=null;this.rel='stylesheet'" />`
+    const noscriptFallback = `<noscript><link rel="stylesheet" href="${cssPath}" /></noscript>`
+
+    html = html.replace('</head>', `${preloadLink}\n    ${noscriptFallback}\n</head>`)
   }
 
   // =========================================================================
