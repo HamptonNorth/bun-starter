@@ -16,12 +16,15 @@
         <div class="text-primary-700 mt-2 ml-8 text-4xl font-semibold">Components</div>
 
         <div class="my-8 ml-8"><hr /></div>
-        <div class="my-2 ml-8">
+        <div class="mt-2 mb-8 ml-8">
           The <span class="text-highlight3 font-bold"> &ltrm-nav-header&gt </span> component
           provides a responsive top navigation bar. As the common custom components are combined
           into a composite custom component during a build process at server start, it is easy to
-          have multiple versions of `<rm-nav-header></rm-nav-header>`. Look at the source for
-          `./src/client-components-build.js` and swop out the line `'import
+          have multiple versions of
+        </div>
+        <rm-nav-header></rm-nav-header>
+        <div class="mt-8 ml-8">
+          Look at the source for `./src/client-components-build.js` and swop out the line `'import
           './components/rm-nav-header.js'` for `import './components/rm-nav-header-pages.js' to see
           a simpler nav bar set up. `rm-nav-header-pages.js` is focused on navigation for a
           blog/documentation site.
