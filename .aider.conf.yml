@@ -1,0 +1,2 @@
+model: ollama_chat/qwen3-coder-next-65k
+auto-commits: false # you review before committing — sensible with a local model

@@ -1,0 +1,3 @@
+- name: ollama_chat/qwen3-coder-next-65k
+  extra_params:
+    num_ctx: 65536
